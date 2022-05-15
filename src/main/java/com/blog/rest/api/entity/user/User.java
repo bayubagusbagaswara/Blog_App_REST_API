@@ -27,6 +27,11 @@ public class User extends DateAudit {
 
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
     @NotBlank
     @Column(name = "first_name")
     @Size(max = 40)
@@ -61,9 +66,6 @@ public class User extends DateAudit {
 
     @Column(name = "phone")
     private String phone;
-
-    @Column(name = "website")
-    private String website;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
