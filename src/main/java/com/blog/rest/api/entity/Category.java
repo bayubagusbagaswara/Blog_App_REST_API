@@ -33,7 +33,8 @@ public class Category extends UserDateAudit {
     // relasi dengan Post, ini relasi bidirectional,
     // artinya dari sisi Category kita bisa mengambil data Post
     // 1 Category bisa memiliki banyak Post
-    private List<Post> posts = new ArrayList<>();
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> posts;
 
     public Category(String name) {
         super();
