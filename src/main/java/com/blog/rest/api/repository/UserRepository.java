@@ -1,6 +1,8 @@
 package com.blog.rest.api.repository;
 
 import com.blog.rest.api.entity.user.User;
+import com.blog.rest.api.exception.ResourceNotFoundException;
+import com.blog.rest.api.security.UserPrincipal;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,4 +20,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Boolean existsByEmail(String email);
 
     Optional<User> findByUsernameOrEmail(String username, String email);
+
+    default User getUser(UserPrincipal currentUser) {
+        return getUserByName(currentUser.getUsername());
+    }
+
+    default User getUserByName(String username) {
+        return findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
+    }
 }
