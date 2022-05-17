@@ -16,9 +16,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -77,7 +75,7 @@ public class User extends DateAudit {
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user_role_user_id"), referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", foreignKey = @ForeignKey(name = "fk_user_role_roke_id"), referencedColumnName = "id"))
-    private Set<Role> roles = new HashSet<>();
+    private List<Role> roles = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -90,5 +88,62 @@ public class User extends DateAudit {
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
+
+
+    public User(String firstName, String lastName, String username, String email, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
+
+    public List<Album> getAlbums() {
+        return albums == null ? null : new ArrayList<>(albums);
+    }
+
+    public void setAlbums(List<Album> albums) {
+        if (albums == null) {
+            this.albums = null;
+        } else {
+            this.albums = Collections.unmodifiableList(albums);
+        }
+    }
+
+    public List<Post> getPosts() {
+        return posts == null ? null : new ArrayList<>(posts);
+    }
+
+    public void setPosts(List<Post> posts) {
+        if (posts == null) {
+            this.posts = null;
+        } else {
+            this.posts = Collections.unmodifiableList(posts);
+        }
+    }
+
+    public List<Role> getRoles() {
+        return roles == null ? null : new ArrayList<>(roles);
+    }
+
+    public void setRoles(List<Role> roles) {
+        if (roles == null) {
+            this.roles = null;
+        } else {
+            this.roles = Collections.unmodifiableList(roles);
+        }
+    }
+
+    public List<Comment> getComments() {
+        return comments == null ? null : new ArrayList<>(comments);
+    }
+
+    public void setComments(List<Comment> comments) {
+        if (comments == null) {
+            this.comments = null;
+        } else {
+            this.comments = Collections.unmodifiableList(comments);
+        }
+    }
 
 }
