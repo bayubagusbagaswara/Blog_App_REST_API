@@ -39,7 +39,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserIdentityAvailability checkEmailAvailability(String email) {
-        return null;
+        Boolean isAvailable = !userRepository.existsByEmail(email);
+        return UserIdentityAvailability.builder()
+                .available(isAvailable)
+                .build();
     }
 
     @Override
