@@ -1,6 +1,7 @@
 package com.blog.rest.api.service;
 
 import com.blog.rest.api.payload.user.UserIdentityAvailability;
+import com.blog.rest.api.payload.user.UserProfile;
 import com.blog.rest.api.payload.user.UserSummary;
 import com.blog.rest.api.security.UserPrincipal;
 
@@ -14,4 +15,7 @@ public interface UserService {
 
     // cek apakah email sudah terdaftar atau belum
     UserIdentityAvailability checkEmailAvailability(String email);
+
+    // ambil profile user
+    UserProfile getUserProfile(String username);
 }
