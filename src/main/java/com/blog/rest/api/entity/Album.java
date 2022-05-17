@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
 @Data
 public class Album extends UserDateAudit {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
