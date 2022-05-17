@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.io.Serial;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -16,6 +17,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class Photo extends UserDateAudit {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
