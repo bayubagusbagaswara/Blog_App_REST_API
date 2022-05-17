@@ -1,5 +1,6 @@
 package com.blog.rest.api.service;
 
+import com.blog.rest.api.entity.user.User;
 import com.blog.rest.api.payload.user.UserIdentityAvailability;
 import com.blog.rest.api.payload.user.UserProfile;
 import com.blog.rest.api.payload.user.UserSummary;
@@ -18,4 +19,7 @@ public interface UserService {
 
     // ambil profile user
     UserProfile getUserProfile(String username);
+
+    // menambahkan user baru
+    User addUser(User user);
 }
