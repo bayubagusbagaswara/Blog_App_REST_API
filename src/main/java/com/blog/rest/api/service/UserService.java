@@ -11,4 +11,7 @@ public interface UserService {
 
     // cek apakah username sudah tersedia atau belum
     UserIdentityAvailability checkUsernameAvailability(String username);
+
+    // cek apakah email sudah terdaftar atau belum
+    UserIdentityAvailability checkEmailAvailability(String email);
 }
