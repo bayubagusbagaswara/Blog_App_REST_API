@@ -1,6 +1,11 @@
 package com.blog.rest.api.service.impl;
 
+import com.blog.rest.api.entity.role.Role;
+import com.blog.rest.api.entity.role.RoleName;
 import com.blog.rest.api.entity.user.User;
+import com.blog.rest.api.exception.AppException;
+import com.blog.rest.api.exception.BadRequestException;
+import com.blog.rest.api.payload.response.ApiResponse;
 import com.blog.rest.api.payload.user.UserIdentityAvailability;
 import com.blog.rest.api.payload.user.UserProfile;
 import com.blog.rest.api.payload.user.UserSummary;
@@ -11,6 +16,9 @@ import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -70,5 +78,39 @@ public class UserServiceImpl implements UserService {
                 .phone(user.getPhone())
                 .postCount(postCount)
                 .build();
+    }
+
+    @Override
+    public User addUser(User user) {
+        // cek apakah user dengan username tertentu ada
+        if (userRepository.existsByUsername(user.getUsername())) {
+            // jika username sudah ada, maka lempar sebagai exception dan membawa response berikut
+            ApiResponse apiResponse = ApiResponse.builder()
+                    .success(Boolean.FALSE)
+                    .message("Username is already taken")
+                    .build();
+            throw new BadRequestException(apiResponse);
+        }
+
+        if (userRepository.existsByEmail(user.getEmail())) {
+            // jika email sudah ada
+            ApiResponse apiResponse = ApiResponse.builder()
+                    .success(Boolean.FALSE)
+                    .message("Email is already taken")
+                    .build();
+            throw new BadRequestException(apiResponse);
+        }
+
+        // create roles untuk user baru
+        List<Role> roles = new ArrayList<>();
+        roles.add(
+                roleRepository.findByName(RoleName.ROLE_USER)
+                        .orElseThrow(() -> new AppException("User role not set")));
+
+        // set roles to user
+        user.setRoles(roles);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        return userRepository.save(user);
     }
 }
