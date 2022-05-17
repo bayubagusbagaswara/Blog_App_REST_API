@@ -1,7 +1,11 @@
 package com.blog.rest.api.entity.user;
 
+import com.blog.rest.api.entity.Album;
+import com.blog.rest.api.entity.Comment;
+import com.blog.rest.api.entity.Post;
 import com.blog.rest.api.entity.audit.DateAudit;
 import com.blog.rest.api.entity.role.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,6 +17,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
@@ -73,4 +78,17 @@ public class User extends DateAudit {
             joinColumns = @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user_role_user_id"), referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", foreignKey = @ForeignKey(name = "fk_user_role_roke_id"), referencedColumnName = "id"))
     private Set<Role> roles = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Album> albums;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> posts;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
+
 }
