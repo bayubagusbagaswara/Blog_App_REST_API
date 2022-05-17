@@ -75,7 +75,7 @@ public class User extends DateAudit {
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user_role_user_id"), referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", foreignKey = @ForeignKey(name = "fk_user_role_roke_id"), referencedColumnName = "id"))
-    private List<Role> roles = new ArrayList<>();
+    private List<Role> roles;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
