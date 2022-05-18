@@ -3,11 +3,12 @@ package com.blog.rest.api.service;
 import com.blog.rest.api.entity.Category;
 import com.blog.rest.api.exception.UnauthorizedException;
 import com.blog.rest.api.payload.response.ApiResponse;
+import com.blog.rest.api.payload.response.PagedResponse;
 import com.blog.rest.api.security.UserPrincipal;
 
 public interface CategoryService {
 
-    Category getAllCategories(int page, int size);
+    PagedResponse<Category> getAllCategories(int page, int size);
 
     Category getCategoryById(Long id);
 
