@@ -1,6 +1,7 @@
 package com.blog.rest.api.controller;
 
 import com.blog.rest.api.entity.user.User;
+import com.blog.rest.api.payload.response.ApiResponse;
 import com.blog.rest.api.payload.user.UserIdentityAvailability;
 import com.blog.rest.api.payload.user.UserProfile;
 import com.blog.rest.api.payload.user.UserSummary;
@@ -62,5 +63,14 @@ public class UserController {
 
         User updatedUSer = userService.updateUser(newUser, username, currentUser);
         return new ResponseEntity< >(updatedUSer, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{username}")
+    public ResponseEntity<ApiResponse> deleteUser(
+            @PathVariable(value = "username") String username,
+            @CurrentUser UserPrincipal currentUser) {
+
+        ApiResponse apiResponse = userService.deleteUser(username, currentUser);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 }
