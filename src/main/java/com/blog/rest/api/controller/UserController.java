@@ -22,7 +22,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    // api method ambil current user
     @GetMapping("/me")
     public ResponseEntity<UserSummary> getCurrentUser(@CurrentUser UserPrincipal currentUser) {
         final UserSummary userSummary = userService.getCurrentUser(currentUser);
@@ -32,6 +31,12 @@ public class UserController {
     @GetMapping("/checkUsernameAvailability")
     public ResponseEntity<UserIdentityAvailability> checkUsernameAvailability(@RequestParam(value = "username") String username) {
         UserIdentityAvailability userIdentityAvailability = userService.checkUsernameAvailability(username);
+        return new ResponseEntity<>(userIdentityAvailability, HttpStatus.OK);
+    }
+
+    @GetMapping("/checkEmailAvailability")
+    public ResponseEntity<UserIdentityAvailability> checkEmailAvailability(@RequestParam(value = "email") String email) {
+        final UserIdentityAvailability userIdentityAvailability = userService.checkEmailAvailability(email);
         return new ResponseEntity<>(userIdentityAvailability, HttpStatus.OK);
     }
 }
