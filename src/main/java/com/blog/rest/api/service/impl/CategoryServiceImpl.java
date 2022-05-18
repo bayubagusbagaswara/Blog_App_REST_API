@@ -59,7 +59,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category addCategory(Category category, UserPrincipal currentUser) {
-        return null;
+        return categoryRepository.save(category);
     }
 
     @Override
