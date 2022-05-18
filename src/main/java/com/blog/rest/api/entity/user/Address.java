@@ -7,7 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.io.Serial;
+import java.time.Instant;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Address extends UserDateAudit {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -51,25 +53,25 @@ public class Address extends UserDateAudit {
 
     @JsonIgnore
     @Override
-    public LocalDateTime getCreatedAt() {
+    public Instant getCreatedAt() {
         return super.getCreatedAt();
     }
 
     @JsonIgnore
     @Override
-    public LocalDateTime getUpdatedAt() {
+    public Instant getUpdatedAt() {
         return super.getUpdatedAt();
     }
 
     @JsonIgnore
     @Override
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Instant createdAt) {
         super.setCreatedAt(createdAt);
     }
 
     @JsonIgnore
     @Override
-    public void setUpdatedAt(LocalDateTime updatedAt) {
+    public void setUpdatedAt(Instant updatedAt) {
         super.setUpdatedAt(updatedAt);
     }
 
