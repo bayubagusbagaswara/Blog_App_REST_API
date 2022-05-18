@@ -14,7 +14,7 @@ public interface CategoryService {
 
     Category addCategory(Category category, UserPrincipal currentUser);
 
-    Category updateCategory(Long id, Category newCategory, UserPrincipal userPrincipal) throws UnauthorizedException;
+    Category updateCategory(Long id, Category newCategory, UserPrincipal currentUser) throws UnauthorizedException;
 
     ApiResponse deleteCategory(Long id, UserPrincipal currentUser) throws UnauthorizedException;
 }
