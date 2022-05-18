@@ -5,6 +5,7 @@ import com.blog.rest.api.entity.role.RoleName;
 import com.blog.rest.api.entity.user.User;
 import com.blog.rest.api.exception.AppException;
 import com.blog.rest.api.exception.BadRequestException;
+import com.blog.rest.api.exception.UnauthorizedException;
 import com.blog.rest.api.payload.response.ApiResponse;
 import com.blog.rest.api.payload.user.UserIdentityAvailability;
 import com.blog.rest.api.payload.user.UserProfile;
@@ -14,6 +15,7 @@ import com.blog.rest.api.repository.RoleRepository;
 import com.blog.rest.api.repository.UserRepository;
 import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.UserService;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -112,5 +114,37 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return userRepository.save(user);
+    }
+
+    @Override
+    public User updateUser(User newUser, String username, UserPrincipal currentUser) {
+        // newUser adalah data User baru yang dikirim dari request body, yang isinya adalah data user
+
+        // cari dan dapatkan data user berdasarkan username
+        final User user = userRepository.getUserByName(username);
+
+        // cek apakah id user sama dengan id current user
+        // atau cek authority current user itu mengandung ROLE_ADMIN
+        // karena yang bisa update data user hanyalah user yang role nya adalah ADMIN
+        if (user.getId().equals(currentUser.getId()) || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+
+            // jika true, maka update data user
+            user.setFirstName(newUser.getFirstName());
+            user.setLastName(newUser.getLastName());
+            user.setPassword(passwordEncoder.encode(newUser.getPassword()));
+            user.setAddress(newUser.getAddress());
+            user.setPhone(newUser.getPhone());
+
+            // save user baru
+            return userRepository.save(user);
+        }
+
+        // jika false, maka kita balikan response gagal mengupdate data user
+        ApiResponse apiResponse = ApiResponse.builder()
+                .success(Boolean.FALSE)
+                .message("You don't have permission to update profile of: " + username)
+                .build();
+        // lalu lempar error
+        throw new UnauthorizedException(apiResponse);
     }
 }
