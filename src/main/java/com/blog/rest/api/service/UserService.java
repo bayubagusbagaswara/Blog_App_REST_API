@@ -1,6 +1,7 @@
 package com.blog.rest.api.service;
 
 import com.blog.rest.api.entity.user.User;
+import com.blog.rest.api.payload.request.InfoRequest;
 import com.blog.rest.api.payload.response.ApiResponse;
 import com.blog.rest.api.payload.user.UserIdentityAvailability;
 import com.blog.rest.api.payload.user.UserProfile;
@@ -35,4 +36,8 @@ public interface UserService {
 
     // remove role admin dari seorang user
     ApiResponse removeAdmin(String username);
+
+    // set atau update info untuk seorang user
+    UserProfile setOrUpdateInfo(UserPrincipal currentUser, InfoRequest infoRequest);
+
 }
