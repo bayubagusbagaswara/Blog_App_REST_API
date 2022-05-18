@@ -1,6 +1,7 @@
 package com.blog.rest.api.service.impl;
 
 import com.blog.rest.api.entity.Category;
+import com.blog.rest.api.exception.ResourceNotFoundException;
 import com.blog.rest.api.exception.UnauthorizedException;
 import com.blog.rest.api.payload.response.ApiResponse;
 import com.blog.rest.api.payload.response.PagedResponse;
@@ -52,7 +53,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category getCategoryById(Long id) {
-        return null;
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
     }
 
     @Override
