@@ -16,6 +16,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.io.Serial;
 import java.util.*;
 
 @EqualsAndHashCode(callSuper = true)
@@ -28,6 +29,7 @@ import java.util.*;
 })
 public class User extends DateAudit {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
