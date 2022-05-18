@@ -32,4 +32,7 @@ public interface UserService {
 
     // give admin adalah memberikan role admin ke user
     ApiResponse giveAdmin(String username);
+
+    // remove role admin dari seorang user
+    ApiResponse removeAdmin(String username);
 }
