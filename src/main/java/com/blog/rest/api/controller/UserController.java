@@ -1,5 +1,6 @@
 package com.blog.rest.api.controller;
 
+import com.blog.rest.api.entity.user.User;
 import com.blog.rest.api.payload.user.UserIdentityAvailability;
 import com.blog.rest.api.payload.user.UserProfile;
 import com.blog.rest.api.payload.user.UserSummary;
@@ -8,7 +9,10 @@ import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/users")
@@ -42,5 +46,11 @@ public class UserController {
     public ResponseEntity<UserProfile> getUserProfile(@PathVariable(value = "username") String username) {
         final UserProfile userProfile = userService.getUserProfile(username);
         return new ResponseEntity<>(userProfile, HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
+        User newUser = userService.addUser(user);
+        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 }
