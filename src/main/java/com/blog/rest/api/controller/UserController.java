@@ -73,4 +73,10 @@ public class UserController {
         ApiResponse apiResponse = userService.deleteUser(username, currentUser);
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
+
+    @PutMapping("/{username}/giveAdmin")
+    public ResponseEntity<ApiResponse> giveAdmin(@PathVariable(value = "username") String username) {
+        ApiResponse apiResponse = userService.giveAdmin(username);
+        return new ResponseEntity< >(apiResponse, HttpStatus.OK);
+    }
 }
