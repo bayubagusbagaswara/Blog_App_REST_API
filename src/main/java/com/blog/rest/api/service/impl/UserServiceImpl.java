@@ -195,4 +195,23 @@ public class UserServiceImpl implements UserService {
                 .message("You gave ADMIN role to user: " + username)
                 .build();
     }
+
+    @Override
+    public ApiResponse removeAdmin(String username) {
+        // remove admin ini sama saja dengan kita buat role baru tapi hanya kita isi role nya sebagai User
+        final User user = userRepository.getUserByName(username);
+
+        List<Role> roles = new ArrayList<>();
+        roles.add(roleRepository.findByName(RoleName.ROLE_USER)
+                .orElseThrow(() -> new AppException("User role not set")));
+
+        user.setRoles(roles);
+
+        userRepository.save(user);
+
+        return ApiResponse.builder()
+                .success(Boolean.TRUE)
+                .message("You took ADMIN role from user: " + username)
+                .build();
+    }
 }
