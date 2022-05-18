@@ -1,6 +1,7 @@
 package com.blog.rest.api.controller;
 
 import com.blog.rest.api.entity.user.User;
+import com.blog.rest.api.payload.request.InfoRequest;
 import com.blog.rest.api.payload.response.ApiResponse;
 import com.blog.rest.api.payload.user.UserIdentityAvailability;
 import com.blog.rest.api.payload.user.UserProfile;
@@ -84,5 +85,14 @@ public class UserController {
     public ResponseEntity<ApiResponse> removeAdmin(@PathVariable(value = "username") String username) {
         ApiResponse apiResponse = userService.removeAdmin(username);
         return new ResponseEntity< >(apiResponse, HttpStatus.OK);
+    }
+
+    @PutMapping("/setOrUpdateInfo")
+    public ResponseEntity<UserProfile> setAddress(
+            @CurrentUser UserPrincipal currentUser,
+            @Valid @RequestBody InfoRequest infoRequest) {
+
+        UserProfile userProfile = userService.setOrUpdateInfo(currentUser, infoRequest);
+        return new ResponseEntity< >(userProfile, HttpStatus.OK);
     }
 }
