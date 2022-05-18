@@ -29,4 +29,7 @@ public interface UserService {
 
     // delete user
     ApiResponse deleteUser(String username, UserPrincipal currentUser);
+
+    // give admin adalah memberikan role admin ke user
+    ApiResponse giveAdmin(String username);
 }
