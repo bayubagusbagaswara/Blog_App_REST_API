@@ -2,8 +2,10 @@ package com.blog.rest.api.service.impl;
 
 import com.blog.rest.api.entity.role.Role;
 import com.blog.rest.api.entity.role.RoleName;
+import com.blog.rest.api.entity.user.Address;
 import com.blog.rest.api.entity.user.User;
 import com.blog.rest.api.exception.*;
+import com.blog.rest.api.payload.request.InfoRequest;
 import com.blog.rest.api.payload.response.ApiResponse;
 import com.blog.rest.api.payload.user.UserIdentityAvailability;
 import com.blog.rest.api.payload.user.UserProfile;
@@ -13,6 +15,7 @@ import com.blog.rest.api.repository.RoleRepository;
 import com.blog.rest.api.repository.UserRepository;
 import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -213,5 +216,54 @@ public class UserServiceImpl implements UserService {
                 .success(Boolean.TRUE)
                 .message("You took ADMIN role from user: " + username)
                 .build();
+    }
+
+    @Override
+    public UserProfile setOrUpdateInfo(UserPrincipal currentUser, InfoRequest infoRequest) {
+        // yang bisa melakukan set atau update info hanyalah user yang memiliki role ADMIN
+        final User user = userRepository.findByUsername(currentUser.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
+
+        // create new address
+        Address address = Address.builder()
+                .street(infoRequest.getStreet())
+                .suite(infoRequest.getSuite())
+                .city(infoRequest.getCity())
+                .zipcode(infoRequest.getZipcode())
+                .build();
+
+        // cek user apakah memiliki role admin
+        if (user.getId().equals(currentUser.getId()) || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+
+            // jika true, maka update
+            user.setAddress(address);
+            user.setPhone(infoRequest.getPhone());
+
+            // save user
+            final User updatedUser = userRepository.save(user);
+
+            final Long postCount = postRepository.countByCreatedBy(updatedUser.getId());
+
+            return UserProfile.builder()
+                    .id(updatedUser.getId())
+                    .username(updatedUser.getUsername())
+                    .firstName(updatedUser.getFirstName())
+                    .lastName(updatedUser.getLastName())
+                    .joinedAt(updatedUser.getCreatedAt())
+                    .email(updatedUser.getEmail())
+                    .address(updatedUser.getAddress())
+                    .phone(updatedUser.getPhone())
+                    .postCount(postCount)
+                    .build();
+        }
+
+        // response jika gagal update
+        ApiResponse apiResponse = ApiResponse.builder()
+                .success(Boolean.FALSE)
+                .message("You don't have permission to update users profile")
+                .status(HttpStatus.FORBIDDEN)
+                .build();
+
+        throw new AccessDeniedException(apiResponse);
     }
 }
