@@ -3,9 +3,7 @@ package com.blog.rest.api.service.impl;
 import com.blog.rest.api.entity.role.Role;
 import com.blog.rest.api.entity.role.RoleName;
 import com.blog.rest.api.entity.user.User;
-import com.blog.rest.api.exception.AppException;
-import com.blog.rest.api.exception.BadRequestException;
-import com.blog.rest.api.exception.UnauthorizedException;
+import com.blog.rest.api.exception.*;
 import com.blog.rest.api.payload.response.ApiResponse;
 import com.blog.rest.api.payload.user.UserIdentityAvailability;
 import com.blog.rest.api.payload.user.UserProfile;
@@ -146,5 +144,29 @@ public class UserServiceImpl implements UserService {
                 .build();
         // lalu lempar error
         throw new UnauthorizedException(apiResponse);
+    }
+
+    @Override
+    public ApiResponse deleteUser(String username, UserPrincipal currentUser) {
+        // yang bisa menghapus user hanyalah user yang memiliki ROLE_ADMIN
+        final User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", username));
+
+        // check user dan role user
+        if (!user.getId().equals(currentUser.getId()) || !currentUser.getAuthorities()
+                .contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+
+            // jika user id tidak sama dan tidak memiliki ROLE_ADMIN, maka lempar error
+            ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to delete profile of: " + username);
+            throw new AccessDeniedException(apiResponse);
+        }
+
+        // jika user nya sama dan rolenya adalah ADMIN, maka bisa delete
+        userRepository.deleteById(user.getId());
+
+        return ApiResponse.builder()
+                .success(Boolean.TRUE)
+                .message("You successfully deleted profile of: " + username)
+                .build();
     }
 }
