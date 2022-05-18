@@ -22,4 +22,7 @@ public interface UserService {
 
     // menambahkan user baru
     User addUser(User user);
+
+    // update user
+    User updateUser(User newUser, String username, UserPrincipal currentUser);
 }
