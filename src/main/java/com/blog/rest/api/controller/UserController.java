@@ -1,5 +1,6 @@
 package com.blog.rest.api.controller;
 
+import com.blog.rest.api.payload.user.UserIdentityAvailability;
 import com.blog.rest.api.payload.user.UserSummary;
 import com.blog.rest.api.security.CurrentUser;
 import com.blog.rest.api.security.UserPrincipal;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -25,5 +27,11 @@ public class UserController {
     public ResponseEntity<UserSummary> getCurrentUser(@CurrentUser UserPrincipal currentUser) {
         final UserSummary userSummary = userService.getCurrentUser(currentUser);
         return new ResponseEntity<>(userSummary, HttpStatus.OK);
+    }
+
+    @GetMapping("/checkUsernameAvailability")
+    public ResponseEntity<UserIdentityAvailability> checkUsernameAvailability(@RequestParam(value = "username") String username) {
+        UserIdentityAvailability userIdentityAvailability = userService.checkUsernameAvailability(username);
+        return new ResponseEntity<>(userIdentityAvailability, HttpStatus.OK);
     }
 }
