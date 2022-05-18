@@ -169,4 +169,30 @@ public class UserServiceImpl implements UserService {
                 .message("You successfully deleted profile of: " + username)
                 .build();
     }
+
+    @Override
+    public ApiResponse giveAdmin(String username) {
+        // yang bisa memberikan kan role baru adalah user yang sudah memiliki role admin
+        final User user = userRepository.getUserByName(username);
+
+        // buat object roles
+        List<Role> roles = new ArrayList<>();
+        // masukkan role admin
+        roles.add(roleRepository.findByName(RoleName.ROLE_ADMIN)
+                .orElseThrow(() -> new AppException("User role not set")));
+        roles.add(roleRepository.findByName(RoleName.ROLE_USER)
+                .orElseThrow(() -> new AppException("User role not set")));
+
+        // set role ke user
+        user.setRoles(roles);
+
+        // save user
+        userRepository.save(user);
+
+        // balikan response berhasil
+        return ApiResponse.builder()
+                .success(Boolean.TRUE)
+                .message("You gave ADMIN role to user: " + username)
+                .build();
+    }
 }
