@@ -1,6 +1,7 @@
 package com.blog.rest.api.service;
 
 import com.blog.rest.api.entity.user.User;
+import com.blog.rest.api.payload.response.ApiResponse;
 import com.blog.rest.api.payload.user.UserIdentityAvailability;
 import com.blog.rest.api.payload.user.UserProfile;
 import com.blog.rest.api.payload.user.UserSummary;
@@ -25,4 +26,7 @@ public interface UserService {
 
     // update user
     User updateUser(User newUser, String username, UserPrincipal currentUser);
+
+    // delete user
+    ApiResponse deleteUser(String username, UserPrincipal currentUser);
 }
