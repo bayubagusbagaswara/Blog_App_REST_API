@@ -1,6 +1,7 @@
 package com.blog.rest.api.service.impl;
 
 import com.blog.rest.api.entity.Category;
+import com.blog.rest.api.entity.role.RoleName;
 import com.blog.rest.api.exception.ResourceNotFoundException;
 import com.blog.rest.api.exception.UnauthorizedException;
 import com.blog.rest.api.payload.response.ApiResponse;
@@ -13,6 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -63,8 +67,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category updateCategory(Long id, Category newCategory, UserPrincipal userPrincipal) throws UnauthorizedException {
-        return null;
+    public Category updateCategory(Long id, Category newCategory, UserPrincipal currentUser) throws UnauthorizedException {
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
+        if (category.getCreatedBy().equals(currentUser.getUsername()) || currentUser.getAuthorities()
+                .contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+            category.setName(newCategory.getName());
+            return categoryRepository.save(category);
+        }
+
+        throw new UnauthorizedException("You don't have permission to edit this category");
     }
 
     @Override
