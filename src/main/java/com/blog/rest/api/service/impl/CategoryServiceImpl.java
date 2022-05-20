@@ -80,6 +80,20 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ApiResponse deleteCategory(Long id, UserPrincipal currentUser) throws UnauthorizedException {
-        return null;
+        // cari category
+        final Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
+
+        // lalu cek user nya apakah ADMIN atau USER biasa
+        if (category.getCreatedBy().equals(currentUser.getUsername()) || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+            // jika iya, maka delete category
+            categoryRepository.deleteById(id);
+            return ApiResponse.builder()
+                    .success(Boolean.TRUE)
+                    .message("You successfully deleted category")
+                    .status(HttpStatus.OK)
+                    .build();
+        }
+        throw new UnauthorizedException("You don't have permission to delete this category");
     }
 }
