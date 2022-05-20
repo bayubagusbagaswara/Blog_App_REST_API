@@ -11,7 +11,6 @@ import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -63,7 +62,7 @@ public class UserController {
             @CurrentUser UserPrincipal currentUser) {
 
         User updatedUSer = userService.updateUser(newUser, username, currentUser);
-        return new ResponseEntity< >(updatedUSer, HttpStatus.CREATED);
+        return new ResponseEntity<>(updatedUSer, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{username}")
@@ -78,13 +77,13 @@ public class UserController {
     @PutMapping("/{username}/giveAdmin")
     public ResponseEntity<ApiResponse> giveAdmin(@PathVariable(value = "username") String username) {
         ApiResponse apiResponse = userService.giveAdmin(username);
-        return new ResponseEntity< >(apiResponse, HttpStatus.OK);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
     @PutMapping("/{username}/removeAdmin")
     public ResponseEntity<ApiResponse> removeAdmin(@PathVariable(value = "username") String username) {
         ApiResponse apiResponse = userService.removeAdmin(username);
-        return new ResponseEntity< >(apiResponse, HttpStatus.OK);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
     @PutMapping("/setOrUpdateInfo")
@@ -93,6 +92,7 @@ public class UserController {
             @Valid @RequestBody InfoRequest infoRequest) {
 
         UserProfile userProfile = userService.setOrUpdateInfo(currentUser, infoRequest);
-        return new ResponseEntity< >(userProfile, HttpStatus.OK);
+        return new ResponseEntity<>(userProfile, HttpStatus.OK);
     }
+
 }
