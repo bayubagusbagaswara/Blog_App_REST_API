@@ -2,10 +2,7 @@ package com.blog.rest.api.entity.user;
 
 import com.blog.rest.api.entity.audit.UserDateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serial;
@@ -16,6 +13,7 @@ import java.time.Instant;
 @Table(name = "address")
 @Data
 @Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class Address extends UserDateAudit {
 
