@@ -66,7 +66,7 @@ public class User extends DateAudit {
     private String email;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "address_id")
+    @JoinColumn(name = "address_id", foreignKey = @ForeignKey(name = "fk_user_address_id"), referencedColumnName = "id")
     private Address address;
 
     @Column(name = "phone")
