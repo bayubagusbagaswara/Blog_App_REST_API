@@ -67,7 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category updateCategory(Long id, Category newCategory, UserPrincipal currentUser) throws UnauthorizedException {
+    public Category updateCategory(Long id, Category newCategory, UserPrincipal currentUser) {
         Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
         if (category.getCreatedBy().equals(currentUser.getUsername()) || currentUser.getAuthorities()
                 .contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
