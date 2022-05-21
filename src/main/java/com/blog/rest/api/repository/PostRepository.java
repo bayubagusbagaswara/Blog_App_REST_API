@@ -19,7 +19,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findByCategory(Long categoryId, Pageable pageable);
 
     // mencari Post berdasarkan tags, tags bisa lebih dari satu
-    Page<Post> findByTags(List<Tag> tags, Pageable pageable);
+//    Page<Post> findByTags(List<Tag> tags, Pageable pageable);
 
     // menghitung jumlah post berdasarkan user yang membuatnya
     Long countByCreatedBy(Long userId);
