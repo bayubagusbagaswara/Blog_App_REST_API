@@ -2,6 +2,9 @@ package com.blog.rest.api.service.impl;
 
 import com.blog.rest.api.entity.Album;
 import com.blog.rest.api.payload.request.AlbumRequest;
+import com.blog.rest.api.payload.response.AlbumResponse;
+import com.blog.rest.api.payload.response.ApiResponse;
+import com.blog.rest.api.payload.response.PagedResponse;
 import com.blog.rest.api.repository.AlbumRepository;
 import com.blog.rest.api.repository.UserRepository;
 import com.blog.rest.api.security.UserPrincipal;
@@ -21,6 +24,31 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
     public Album addAlbum(AlbumRequest albumRequest, UserPrincipal currentUser) {
+        return null;
+    }
+
+    @Override
+    public Album getAlbumById(Long id) {
+        return null;
+    }
+
+    @Override
+    public PagedResponse<AlbumResponse> getAllAlbums(int page, int size) {
+        return null;
+    }
+
+    @Override
+    public AlbumResponse updateAlbum(Long id, AlbumRequest newAlbum, UserPrincipal currentUser) {
+        return null;
+    }
+
+    @Override
+    public ApiResponse deleteAlbum(Long id, UserPrincipal currentUser) {
+        return null;
+    }
+
+    @Override
+    public Album getUserAlbums(String username, int page, int size) {
         return null;
     }
 }
