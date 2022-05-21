@@ -42,10 +42,20 @@ public class CategoryController {
 
     // get category by id
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<Category> getCategoryById(@PathVariable(name = "id") Long id) {
         final Category category = categoryService.getCategoryById(id);
         return new ResponseEntity<>(category, HttpStatus.OK);
     }
 
+    // update category
+    @PutMapping("/{id}")
+    public ResponseEntity<Category> updateCategory(
+            @PathVariable(name = "id") Long id,
+            @Valid @RequestBody Category category,
+            @CurrentUser UserPrincipal currentUser) {
+
+        final Category updatedCategory = categoryService.updateCategory(id, category, currentUser);
+        return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
+    }
 
 }
