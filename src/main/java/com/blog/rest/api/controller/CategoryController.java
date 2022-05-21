@@ -1,6 +1,7 @@
 package com.blog.rest.api.controller;
 
 import com.blog.rest.api.entity.Category;
+import com.blog.rest.api.payload.response.ApiResponse;
 import com.blog.rest.api.payload.response.PagedResponse;
 import com.blog.rest.api.security.CurrentUser;
 import com.blog.rest.api.security.UserPrincipal;
@@ -56,6 +57,15 @@ public class CategoryController {
 
         final Category updatedCategory = categoryService.updateCategory(id, category, currentUser);
         return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> deleteCategory(
+            @PathVariable(name = "id") Long id,
+            @CurrentUser UserPrincipal userPrincipal) {
+
+        final ApiResponse apiResponse = categoryService.deleteCategory(id, userPrincipal);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
 }
