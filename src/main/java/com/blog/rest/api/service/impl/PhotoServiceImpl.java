@@ -14,8 +14,7 @@ import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.PhotoService;
 import org.springframework.stereotype.Service;
 
-import static com.blog.rest.api.utils.AppConstants.ALBUM;
-import static com.blog.rest.api.utils.AppConstants.ID;
+import static com.blog.rest.api.utils.AppConstants.*;
 
 @Service
 public class PhotoServiceImpl implements PhotoService {
@@ -65,7 +64,17 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public PhotoResponse getPhotoById(Long id) {
-        return null;
+        // cari photo
+        Photo photo = photoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(PHOTO, ID, id));
+
+        return PhotoResponse.builder()
+                .id(photo.getId())
+                .title(photo.getTitle())
+                .url(photo.getUrl())
+                .thumbnailUrl(photo.getThumbnailUrl())
+                .albumId(photo.getAlbum().getId())
+                .build();
     }
 
     @Override
