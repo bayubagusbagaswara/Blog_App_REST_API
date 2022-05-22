@@ -13,6 +13,11 @@ import com.blog.rest.api.repository.PostRepository;
 import com.blog.rest.api.repository.UserRepository;
 import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.CommentService;
+import com.blog.rest.api.utils.AppUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -76,7 +81,23 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public PagedResponse<Comment> getAllComments(Long postId, int page, int size) {
-        return null;
+        // validasi dulu data page dan size
+        AppUtils.validatePageNumberAndSize(page, size);
+
+        // buat object pageable
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
+
+        // cari comment by post id, masukkan parameter postId dan pageable
+        Page<Comment> comments = commentRepository.findByPostId(postId, pageable);
+
+        return PagedResponse.<Comment>builder()
+                .content(comments.getContent())
+                .page(comments.getNumber())
+                .size(comments.getSize())
+                .totalElements(comments.getTotalElements())
+                .totalPages(comments.getTotalPages())
+                .last(comments.isLast())
+                .build();
     }
 
     @Override
