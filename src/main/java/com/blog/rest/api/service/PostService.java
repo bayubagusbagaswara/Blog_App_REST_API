@@ -23,4 +23,5 @@ public interface PostService {
 
     PagedResponse<Post> getPostsByCategory(Long id, int page, int size);
 
+    PagedResponse<Post> getPostsByTag(Long id, int page, int size);
 }
