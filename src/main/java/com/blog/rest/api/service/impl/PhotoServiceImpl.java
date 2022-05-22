@@ -12,7 +12,16 @@ import com.blog.rest.api.repository.AlbumRepository;
 import com.blog.rest.api.repository.PhotoRepository;
 import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.PhotoService;
+import com.blog.rest.api.utils.AppUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static com.blog.rest.api.utils.AppConstants.*;
 
@@ -79,7 +88,46 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public PagedResponse<PhotoResponse> getAllPhotos(int page, int size) {
-        return null;
+
+        // validasi data page dan size
+        AppUtils.validatePageNumberAndSize(page, size);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
+
+        Page<Photo> photos = photoRepository.findAll(pageable);
+
+        List<PhotoResponse> photoResponses = new ArrayList<>(photos.getContent().size());
+
+        for (Photo photo : photos.getContent()) {
+            PhotoResponse photoResponse = PhotoResponse.builder()
+                    .id(photo.getId())
+                    .title(photo.getTitle())
+                    .url(photo.getUrl())
+                    .thumbnailUrl(photo.getThumbnailUrl())
+                    .albumId(photo.getAlbum().getId())
+                    .build();
+            photoResponses.add(photoResponse);
+        }
+
+        if (photos.getNumberOfElements() == 0) {
+            return PagedResponse.<PhotoResponse>builder()
+                    .content(Collections.emptyList())
+                    .page(photos.getNumber())
+                    .size(photos.getSize())
+                    .totalElements(photos.getTotalElements())
+                    .totalPages(photos.getTotalPages())
+                    .last(photos.isLast())
+                    .build();
+        }
+
+        return PagedResponse.<PhotoResponse>builder()
+                .content(photoResponses)
+                .page(photos.getNumber())
+                .size(photos.getSize())
+                .totalElements(photos.getTotalElements())
+                .totalPages(photos.getTotalPages())
+                .last(photos.isLast())
+                .build();
     }
 
     @Override
