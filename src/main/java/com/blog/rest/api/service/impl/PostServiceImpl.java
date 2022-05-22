@@ -164,7 +164,20 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public ApiResponse deletePost(Long id, UserPrincipal currentUser) {
-        return null;
+
+        // cek post
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(POST, ID, id));
+
+        // cek user apakah memiliki ROLE_ADMIN
+        if (post.getUser().getId().equals(currentUser.getId())
+                || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+            postRepository.deleteById(id);
+            return new ApiResponse(Boolean.TRUE, "You successfully deleted post");
+        }
+
+        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to delete this post");
+        throw new UnauthorizedException(apiResponse);
     }
 
     @Override
