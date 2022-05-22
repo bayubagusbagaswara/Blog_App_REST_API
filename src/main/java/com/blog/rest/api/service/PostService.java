@@ -18,4 +18,7 @@ public interface PostService {
     Post updatePost(Long id, PostRequest newPostRequest, UserPrincipal currentUser);
 
     ApiResponse deletePost(Long id, UserPrincipal currentUser);
+
+    PagedResponse<Post> getPostsByCreatedBy(String username, int page, int size);
+
 }
