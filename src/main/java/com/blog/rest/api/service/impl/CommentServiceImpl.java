@@ -3,6 +3,7 @@ package com.blog.rest.api.service.impl;
 import com.blog.rest.api.entity.Comment;
 import com.blog.rest.api.entity.Post;
 import com.blog.rest.api.entity.user.User;
+import com.blog.rest.api.exception.BlogApiException;
 import com.blog.rest.api.exception.ResourceNotFoundException;
 import com.blog.rest.api.payload.request.CommentRequest;
 import com.blog.rest.api.payload.response.ApiResponse;
@@ -12,6 +13,7 @@ import com.blog.rest.api.repository.PostRepository;
 import com.blog.rest.api.repository.UserRepository;
 import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.CommentService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -56,7 +58,20 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment getCommentById(Long postId, Long id) {
-        return null;
+        // cek post
+        final Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException(POST_STR, ID_STR, postId));
+
+        // cek comment
+        final Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(COMMENT_STR, ID_STR, id));
+
+        if (comment.getPost().getId().equals(post.getId())) {
+            return comment;
+        }
+
+        // jika comment tidak ditemukan artinya tidak ada comment untuk post tersebut
+        throw new BlogApiException(HttpStatus.BAD_REQUEST, COMMENT_DOES_NOT_BELONG_TO_POST);
     }
 
     @Override
