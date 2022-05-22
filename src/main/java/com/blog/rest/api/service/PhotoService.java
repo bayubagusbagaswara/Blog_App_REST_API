@@ -12,4 +12,6 @@ public interface PhotoService {
     PhotoResponse getPhotoById(Long id);
 
     PagedResponse<PhotoResponse> getAllPhotos(int page, int size);
+
+    PhotoResponse updatePhoto(Long id, PhotoRequest photoRequest, UserPrincipal currentUser);
 }
