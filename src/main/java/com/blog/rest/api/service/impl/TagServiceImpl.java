@@ -76,6 +76,16 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public ApiResponse deleteTag(Long id, UserPrincipal currentUser) {
-        return null;
+        Tag tag = tagRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Tag", "id", id));
+        if (tag.getCreatedBy().equals(currentUser.getUsername()) || currentUser.getAuthorities()
+                .contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+            tagRepository.deleteById(id);
+            return new ApiResponse(Boolean.TRUE, "You successfully deleted tag");
+        }
+
+        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to delete this tag");
+
+        throw new UnauthorizedException(apiResponse);
     }
 }
