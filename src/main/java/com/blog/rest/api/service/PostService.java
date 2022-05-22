@@ -13,4 +13,6 @@ public interface PostService {
     Post getPostById(Long id);
 
     PagedResponse<Post> getAllPosts(int page, int size);
+
+    Post updatePost(Long id, PostRequest newPostRequest, UserPrincipal userPrincipal);
 }
