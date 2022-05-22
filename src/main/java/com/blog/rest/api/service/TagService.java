@@ -12,4 +12,6 @@ public interface TagService {
 
     PagedResponse<Tag> getAllTags(int page, int size);
 
+    Tag updateTag(Long id, Tag newTag, UserPrincipal currentUser);
+
 }
