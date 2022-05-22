@@ -12,4 +12,7 @@ public interface CommentService {
     Comment getCommentById(Long postId, Long id);
 
     PagedResponse<Comment> getAllComments(Long postId, int page, int size);
+
+    Comment updateComment(Long postId, Long id, CommentRequest commentRequest, UserPrincipal currentUser);
+
 }
