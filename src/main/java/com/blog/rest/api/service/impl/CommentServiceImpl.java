@@ -132,6 +132,26 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public ApiResponse deleteComment(Long postId, Long id, UserPrincipal currentUser) {
-        return null;
+        // cek post
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException(POST_STR, ID_STR, postId));
+
+        // cek comment
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(COMMENT_STR, ID_STR, id));
+
+        // cek post apakah sama atau tidak
+        if (!comment.getPost().getId().equals(post.getId())) {
+            return new ApiResponse(Boolean.FALSE, COMMENT_DOES_NOT_BELONG_TO_POST);
+        }
+
+        // cek user apakah sama atau user memiliki ROLE ADMIN
+        if (comment.getUser().getId().equals(currentUser.getId())
+                || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+            commentRepository.deleteById(comment.getId());
+            return new ApiResponse(Boolean.TRUE, "You successfully deleted comment");
+        }
+
+        throw new BlogApiException(HttpStatus.UNAUTHORIZED, YOU_DON_T_HAVE_PERMISSION_TO + "delete" + THIS_COMMENT);
     }
 }
