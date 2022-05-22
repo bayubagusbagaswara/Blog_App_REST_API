@@ -1,6 +1,7 @@
 package com.blog.rest.api.service.impl;
 
 import com.blog.rest.api.entity.Tag;
+import com.blog.rest.api.exception.ResourceNotFoundException;
 import com.blog.rest.api.payload.response.ApiResponse;
 import com.blog.rest.api.payload.response.PagedResponse;
 import com.blog.rest.api.repository.TagRepository;
@@ -24,7 +25,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Tag getTagById(Long id) {
-        return null;
+        return tagRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Tag", "id", id));
     }
 
     @Override
