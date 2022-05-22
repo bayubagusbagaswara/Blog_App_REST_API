@@ -17,4 +17,6 @@ public interface PhotoService {
     PhotoResponse updatePhoto(Long id, PhotoRequest photoRequest, UserPrincipal currentUser);
 
     ApiResponse deletePhoto(Long id, UserPrincipal currentUser);
+
+    PagedResponse<PhotoResponse> getAllPhotosByAlbum(Long albumId, int page, int size);
 }
