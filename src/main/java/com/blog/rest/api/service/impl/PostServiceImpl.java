@@ -209,7 +209,25 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PagedResponse<Post> getPostsByCategory(Long id, int page, int size) {
-        return null;
+
+        AppUtils.validatePageNumberAndSize(page, size);
+
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(CATEGORY, ID, id));
+
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
+
+        Page<Post> posts = postRepository.findByCategory(category.getId(), pageable);
+
+        List<Post> content = posts.getNumberOfElements() == 0 ? Collections.emptyList() : posts.getContent();
+
+        return PagedResponse.<Post>builder()
+                .content(content)
+                .page(posts.getNumber())
+                .size(posts.getSize())
+                .totalElements(posts.getTotalElements())
+                .totalPages(posts.getTotalPages())
+                .build();
     }
 
     @Override
