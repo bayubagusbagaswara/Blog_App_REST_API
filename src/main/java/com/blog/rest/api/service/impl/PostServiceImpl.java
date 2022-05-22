@@ -3,8 +3,10 @@ package com.blog.rest.api.service.impl;
 import com.blog.rest.api.entity.Category;
 import com.blog.rest.api.entity.Post;
 import com.blog.rest.api.entity.Tag;
+import com.blog.rest.api.entity.role.RoleName;
 import com.blog.rest.api.entity.user.User;
 import com.blog.rest.api.exception.ResourceNotFoundException;
+import com.blog.rest.api.exception.UnauthorizedException;
 import com.blog.rest.api.payload.request.PostRequest;
 import com.blog.rest.api.payload.response.ApiResponse;
 import com.blog.rest.api.payload.response.PagedResponse;
@@ -21,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -136,7 +139,27 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post updatePost(Long id, PostRequest newPostRequest, UserPrincipal currentUser) {
-        return null;
+
+        // cek post
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(POST, ID, id));
+
+        // cek category
+        Category category = categoryRepository.findById(newPostRequest.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException(CATEGORY, ID, newPostRequest.getCategoryId()));
+
+        // cek user apakah memiliki ROLE ADMIN
+        if (post.getUser().getId().equals(currentUser.getId())
+                || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+            post.setTitle(newPostRequest.getTitle());
+            post.setBody(newPostRequest.getBody());
+            post.setCategory(category);
+            return postRepository.save(post);
+        }
+
+        // jika user tidak bisa update post
+        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to edit this post");
+        throw new UnauthorizedException(apiResponse);
     }
 
     @Override
