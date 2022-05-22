@@ -16,9 +16,15 @@ import com.blog.rest.api.repository.UserRepository;
 import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.PostService;
 import com.blog.rest.api.utils.AppConstants;
+import com.blog.rest.api.utils.AppUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.blog.rest.api.utils.AppConstants.*;
@@ -105,7 +111,27 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PagedResponse<Post> getAllPosts(int page, int size) {
-        return null;
+
+        // validasi data page and size
+        AppUtils.validatePageNumberAndSize(page, size);
+
+        // bikin object pageable
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
+
+        // ambil data list of posts
+        Page<Post> posts = postRepository.findAll(pageable);
+
+        // ambil content dimana adalah list of post
+        List<Post> content = posts.getNumberOfElements() == 0 ? Collections.emptyList() : posts.getContent();
+
+        return PagedResponse.<Post>builder()
+                .content(content)
+                .page(posts.getNumber())
+                .size(posts.getSize())
+                .totalElements(posts.getTotalElements())
+                .totalPages(posts.getTotalPages())
+                .last(posts.isLast())
+                .build();
     }
 
     @Override
