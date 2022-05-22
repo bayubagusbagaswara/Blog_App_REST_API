@@ -46,7 +46,7 @@ public class Tag extends UserDateAudit {
             name = "post_tag",
             joinColumns = @JoinColumn(name = "tag_id", foreignKey = @ForeignKey(name = "fk_post_tag_tag_id"), referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "fk_post_tag_post_id"), referencedColumnName = "id"))
-    private List<Post> posts = new ArrayList<>();
+    private List<Post> posts;
 
     // Constructor with parameter is name tag
     public Tag(String name) {
