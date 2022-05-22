@@ -2,6 +2,7 @@ package com.blog.rest.api.service.impl;
 
 import com.blog.rest.api.entity.Comment;
 import com.blog.rest.api.entity.Post;
+import com.blog.rest.api.entity.role.RoleName;
 import com.blog.rest.api.entity.user.User;
 import com.blog.rest.api.exception.BlogApiException;
 import com.blog.rest.api.exception.ResourceNotFoundException;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -102,7 +104,30 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment updateComment(Long postId, Long id, CommentRequest commentRequest, UserPrincipal currentUser) {
-        return null;
+
+        // cek post
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException(POST_STR, ID_STR, postId));
+
+        // cek comment
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(COMMENT_STR, ID_STR, id));
+
+        // cek apakah post dari comment dan post itu sama, jika tidak sama, maka lempar exception
+        if (!comment.getPost().getId().equals(post.getId())) {
+            throw new BlogApiException(HttpStatus.BAD_REQUEST, COMMENT_DOES_NOT_BELONG_TO_POST);
+        }
+
+        // cek apakah user nya sama atau user yang memiliki ROLE ADMIN
+        // jika sama, maka simpan comment nya
+        if (comment.getUser().getId().equals(currentUser.getId())
+                || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+            comment.setBody(commentRequest.getBody());
+            return commentRepository.save(comment);
+        }
+
+        // tidak bisa update comment, maka lempar exception
+        throw new BlogApiException(HttpStatus.UNAUTHORIZED, YOU_DON_T_HAVE_PERMISSION_TO + "update" + THIS_COMMENT);
     }
 
     @Override
