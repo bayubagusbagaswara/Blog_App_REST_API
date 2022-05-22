@@ -7,7 +7,15 @@ import com.blog.rest.api.payload.response.PagedResponse;
 import com.blog.rest.api.repository.TagRepository;
 import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.TagService;
+import com.blog.rest.api.utils.AppUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class TagServiceImpl implements TagService {
@@ -30,7 +38,23 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public PagedResponse<Tag> getAllTags(int page, int size) {
-        return null;
+        // validasi data page dan size
+        AppUtils.validatePageNumberAndSize(page, size);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
+
+        Page<Tag> tags = tagRepository.findAll(pageable);
+
+        List<Tag> content = tags.getNumberOfElements() == 0 ? Collections.emptyList() : tags.getContent();
+
+        return PagedResponse.<Tag>builder()
+                .content(content)
+                .page(tags.getNumber())
+                .size(tags.getSize())
+                .totalPages(tags.getTotalPages())
+                .totalElements(tags.getTotalElements())
+                .last(tags.isLast())
+                .build();
     }
 
     @Override
