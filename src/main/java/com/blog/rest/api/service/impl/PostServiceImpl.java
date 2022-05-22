@@ -182,7 +182,29 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PagedResponse<Post> getPostsByCreatedBy(String username, int page, int size) {
-        return null;
+
+        // validasi data page dan size
+        AppUtils.validatePageNumberAndSize(page, size);
+
+        // cek user
+        User user = userRepository.getUserByName(username);
+
+        // create object pageable
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
+
+        // dapatkan object posts
+        Page<Post> posts = postRepository.findByCreatedBy(user.getId(), pageable);
+
+        // create object list of post
+        List<Post> content = posts.getNumberOfElements() == 0 ? Collections.emptyList() : posts.getContent();
+
+        return PagedResponse.<Post>builder()
+                .content(content)
+                .page(posts.getNumber())
+                .size(posts.getSize())
+                .totalElements(posts.getTotalElements())
+                .totalPages(posts.getTotalPages())
+                .build();
     }
 
     @Override
