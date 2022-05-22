@@ -21,4 +21,6 @@ public interface PostService {
 
     PagedResponse<Post> getPostsByCreatedBy(String username, int page, int size);
 
+    PagedResponse<Post> getPostsByCategory(Long id, int page, int size);
+
 }
