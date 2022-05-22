@@ -7,4 +7,6 @@ public interface TagService {
 
     Tag addTag(Tag tag, UserPrincipal currentUser);
 
+    Tag getTagById(Long id);
+
 }
