@@ -7,4 +7,6 @@ import com.blog.rest.api.security.UserPrincipal;
 public interface CommentService {
 
     Comment addComment(CommentRequest commentRequest, Long postId, UserPrincipal currentUser);
+
+    Comment getCommentById(Long postId, Long id);
 }
