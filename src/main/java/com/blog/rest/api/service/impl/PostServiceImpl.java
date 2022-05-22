@@ -100,7 +100,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post getPostById(Long id) {
-        return null;
+        return postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(POST, ID, id));
     }
 
     @Override
