@@ -1,7 +1,9 @@
 package com.blog.rest.api.service.impl;
 
 import com.blog.rest.api.entity.Tag;
+import com.blog.rest.api.entity.role.RoleName;
 import com.blog.rest.api.exception.ResourceNotFoundException;
+import com.blog.rest.api.exception.UnauthorizedException;
 import com.blog.rest.api.payload.response.ApiResponse;
 import com.blog.rest.api.payload.response.PagedResponse;
 import com.blog.rest.api.repository.TagRepository;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -59,7 +62,16 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Tag updateTag(Long id, Tag newTag, UserPrincipal currentUser) {
-        return null;
+        Tag tag = tagRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Tag", "id", id));
+        if (tag.getCreatedBy().equals(currentUser.getUsername()) || currentUser.getAuthorities()
+                .contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+            tag.setName(newTag.getName());
+            return tagRepository.save(tag);
+        }
+        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to edit this tag");
+
+        throw new UnauthorizedException(apiResponse);
     }
 
     @Override
