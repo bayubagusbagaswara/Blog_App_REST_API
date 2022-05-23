@@ -1,5 +1,6 @@
 package com.blog.rest.api.controller;
 
+import com.blog.rest.api.payload.ApiResponse;
 import com.blog.rest.api.payload.PagedResponse;
 import com.blog.rest.api.payload.photo.PhotoRequest;
 import com.blog.rest.api.payload.photo.PhotoResponse;
@@ -60,6 +61,16 @@ public class PhotoController {
 
         PhotoResponse photoResponse = photoService.updatePhoto(id, photoRequest, currentUser);
         return new ResponseEntity<>(photoResponse, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse> deletePhoto(
+            @PathVariable(name = "id") Long id,
+            @CurrentUser UserPrincipal currentUser) {
+
+        ApiResponse apiResponse = photoService.deletePhoto(id, currentUser);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
 }
