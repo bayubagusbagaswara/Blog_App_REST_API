@@ -1,6 +1,7 @@
 package com.blog.rest.api.controller;
 
 import com.blog.rest.api.entity.Post;
+import com.blog.rest.api.payload.ApiResponse;
 import com.blog.rest.api.payload.PagedResponse;
 import com.blog.rest.api.payload.post.PostRequest;
 import com.blog.rest.api.payload.post.PostResponse;
@@ -61,4 +62,13 @@ public class PostController {
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse> deletePost(
+            @PathVariable(name = "id") Long id,
+            @CurrentUser UserPrincipal currentUser) {
+
+        ApiResponse apiResponse = postService.deletePost(id, currentUser);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+    }
 }
