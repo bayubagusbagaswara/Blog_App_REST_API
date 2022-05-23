@@ -35,7 +35,7 @@ public class Album extends UserDateAudit {
     private User user;
 
     @OneToMany(mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Photo> photos = new ArrayList<>();
+    private List<Photo> photos;
 
     @JsonIgnore
     public User getUser() {
