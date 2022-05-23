@@ -2,10 +2,7 @@ package com.blog.rest.api.entity;
 
 import com.blog.rest.api.entity.audit.UserDateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -16,6 +13,7 @@ import java.io.Serial;
 @Table(name = "photos", uniqueConstraints = { @UniqueConstraint(columnNames = { "title" }) })
 @Data
 @Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class Photo extends UserDateAudit {
 
