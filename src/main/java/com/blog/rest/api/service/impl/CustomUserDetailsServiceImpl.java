@@ -5,14 +5,13 @@ import com.blog.rest.api.repository.UserRepository;
 import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.CustomUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class CustomUserDetailsServiceImpl implements UserDetailsService, CustomUserDetailsService {
+public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
 
     private final UserRepository userRepository;
 
