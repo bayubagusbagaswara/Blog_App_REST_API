@@ -1,6 +1,7 @@
 package com.blog.rest.api.controller;
 
 import com.blog.rest.api.entity.Comment;
+import com.blog.rest.api.payload.ApiResponse;
 import com.blog.rest.api.payload.PagedResponse;
 import com.blog.rest.api.payload.comment.CommentRequest;
 import com.blog.rest.api.security.CurrentUser;
@@ -66,4 +67,17 @@ public class CommentController {
         return new ResponseEntity<>(updatedComment, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse> deleteComment(
+            @PathVariable(name = "postId") Long postId,
+            @PathVariable(name = "id") Long id,
+            @CurrentUser UserPrincipal currentUser) {
+
+        ApiResponse response = commentService.deleteComment(postId, id, currentUser);
+
+        HttpStatus status = response.getSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+
+        return new ResponseEntity<>(response, status);
+    }
 }
