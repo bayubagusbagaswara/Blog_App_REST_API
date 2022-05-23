@@ -13,6 +13,7 @@ import com.blog.rest.api.repository.AlbumRepository;
 import com.blog.rest.api.repository.PhotoRepository;
 import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.PhotoService;
+import com.blog.rest.api.utils.AppConstants;
 import com.blog.rest.api.utils.AppUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -191,6 +192,39 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public PagedResponse<PhotoResponse> getAllPhotosByAlbum(Long albumId, int page, int size) {
-        return null;
+
+        // validasi data page dan size
+        AppUtils.validatePageNumberAndSize(page, size);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, AppConstants.CREATED_AT);
+
+        Page<Photo> photos = photoRepository.findByAlbumId(albumId, pageable);
+
+        List<PhotoResponse> photoResponses = new ArrayList<>(photos.getContent().size());
+
+        // ambil semua data photo
+        for (Photo photo : photos.getContent()) {
+            PhotoResponse photoResponse = PhotoResponse.builder()
+                    .id(photo.getId())
+                    .title(photo.getTitle())
+                    .url(photo.getUrl())
+                    .thumbnailUrl(photo.getThumbnailUrl())
+                    .albumId(photo.getAlbum().getId())
+                    .build();
+
+            // add photoResponse
+            photoResponses.add(photoResponse);
+        }
+
+        // response PagedRespone
+        return PagedResponse.<PhotoResponse>builder()
+                .content(photoResponses)
+                .page(photos.getNumber())
+                .size(photos.getSize())
+                .totalElements(photos.getTotalElements())
+                .totalPages(photos.getTotalPages())
+                .last(photos.isLast())
+                .build();
     }
+
 }
