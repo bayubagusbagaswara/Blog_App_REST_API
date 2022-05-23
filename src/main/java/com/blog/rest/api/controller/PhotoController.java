@@ -8,10 +8,7 @@ import com.blog.rest.api.service.PhotoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -32,6 +29,14 @@ public class PhotoController {
             @CurrentUser UserPrincipal currentUser) {
 
         PhotoResponse photoResponse = photoService.addPhoto(photoRequest, currentUser);
+        return new ResponseEntity<>(photoResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PhotoResponse> getPhotoById(
+            @PathVariable(name = "id") Long id) {
+
+        PhotoResponse photoResponse = photoService.getPhotoById(id);
         return new ResponseEntity<>(photoResponse, HttpStatus.OK);
     }
 
