@@ -3,11 +3,15 @@ package com.blog.rest.api.controller;
 import com.blog.rest.api.entity.Album;
 import com.blog.rest.api.exception.ResponseEntityErrorException;
 import com.blog.rest.api.payload.ApiResponse;
+import com.blog.rest.api.payload.PagedResponse;
 import com.blog.rest.api.payload.album.AlbumRequest;
+import com.blog.rest.api.payload.album.AlbumResponse;
 import com.blog.rest.api.security.CurrentUser;
 import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.AlbumService;
 import com.blog.rest.api.service.PhotoService;
+import com.blog.rest.api.utils.AppConstants;
+import com.blog.rest.api.utils.AppUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -47,6 +51,16 @@ public class AlbumController {
     public ResponseEntity<Album> getAlbumById(@PathVariable(name = "id") Long id) {
         final Album album = albumService.getAlbumById(id);
         return new ResponseEntity<>(album, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public PagedResponse<AlbumResponse> getAllAlbums(
+            @RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+            @RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+
+        AppUtils.validatePageNumberAndSize(page, size);
+
+        return albumService.getAllAlbums(page, size);
     }
 
 }
