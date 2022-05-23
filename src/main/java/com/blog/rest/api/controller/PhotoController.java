@@ -51,4 +51,15 @@ public class PhotoController {
         return new ResponseEntity<>(allPhotos, HttpStatus.OK);
     }
 
+    @PutMapping("/{id}")
+//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<PhotoResponse> updatePhoto(
+            @PathVariable(name = "id") Long id,
+            @Valid @RequestBody PhotoRequest photoRequest,
+            @CurrentUser UserPrincipal currentUser) {
+
+        PhotoResponse photoResponse = photoService.updatePhoto(id, photoRequest, currentUser);
+        return new ResponseEntity<>(photoResponse, HttpStatus.OK);
+    }
+
 }
