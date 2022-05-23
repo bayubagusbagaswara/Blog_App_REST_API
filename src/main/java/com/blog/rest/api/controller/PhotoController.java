@@ -1,10 +1,12 @@
 package com.blog.rest.api.controller;
 
+import com.blog.rest.api.payload.PagedResponse;
 import com.blog.rest.api.payload.photo.PhotoRequest;
 import com.blog.rest.api.payload.photo.PhotoResponse;
 import com.blog.rest.api.security.CurrentUser;
 import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.PhotoService;
+import com.blog.rest.api.utils.AppConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,6 +40,15 @@ public class PhotoController {
 
         PhotoResponse photoResponse = photoService.getPhotoById(id);
         return new ResponseEntity<>(photoResponse, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<PagedResponse<PhotoResponse>> getAllPhotos(
+            @RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+            @RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+
+        final PagedResponse<PhotoResponse> allPhotos = photoService.getAllPhotos(page, size);
+        return new ResponseEntity<>(allPhotos, HttpStatus.OK);
     }
 
 }
