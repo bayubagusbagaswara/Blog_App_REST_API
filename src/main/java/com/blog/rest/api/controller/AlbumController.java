@@ -63,4 +63,15 @@ public class AlbumController {
         return albumService.getAllAlbums(page, size);
     }
 
+    @PutMapping("/{id}")
+//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<AlbumResponse> updateAlbum(
+            @PathVariable(name = "id") Long id,
+            @Valid @RequestBody AlbumRequest newAlbum,
+            @CurrentUser UserPrincipal currentUser) {
+
+        final AlbumResponse album = albumService.updateAlbum(id, newAlbum, currentUser);
+        return new ResponseEntity<>(album, HttpStatus.OK);
+    }
+
 }
