@@ -71,4 +71,15 @@ public class PostController {
         ApiResponse apiResponse = postService.deletePost(id, currentUser);
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
+
+    @GetMapping("/category/{id}")
+    public ResponseEntity<PagedResponse<Post>> getPostsByCategory(
+            @RequestParam(value = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+            @RequestParam(value = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size,
+            @PathVariable(name = "id") Long id) {
+
+        PagedResponse<Post> response = postService.getPostsByCategory(id, page, size);
+        return new ResponseEntity< >(response, HttpStatus.OK);
+    }
+
 }
