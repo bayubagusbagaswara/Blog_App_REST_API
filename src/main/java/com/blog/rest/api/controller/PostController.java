@@ -1,11 +1,13 @@
 package com.blog.rest.api.controller;
 
 import com.blog.rest.api.entity.Post;
+import com.blog.rest.api.payload.PagedResponse;
 import com.blog.rest.api.payload.post.PostRequest;
 import com.blog.rest.api.payload.post.PostResponse;
 import com.blog.rest.api.security.CurrentUser;
 import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.PostService;
+import com.blog.rest.api.utils.AppConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,6 +39,15 @@ public class PostController {
     public ResponseEntity<Post> getPostById(@PathVariable(name = "id") Long id) {
         Post post = postService.getPostById(id);
         return new ResponseEntity<>(post, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<PagedResponse<Post>> getAllPosts(
+            @RequestParam(value = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+            @RequestParam(value = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+
+        PagedResponse<Post> response = postService.getAllPosts(page, size);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }
