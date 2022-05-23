@@ -171,7 +171,22 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public ApiResponse deletePhoto(Long id, UserPrincipal currentUser) {
-        return null;
+        // get photo
+        Photo photo = photoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(PHOTO, ID, id));
+
+        // cek apakah user photo sama dengan current user
+        if (photo.getAlbum().getUser().getId().equals(currentUser.getId())
+                || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+
+            // hapus photo
+            photoRepository.deleteById(id);
+            return new ApiResponse(Boolean.TRUE, "Photo deleted successfully");
+        }
+
+        // response gagal menghapus photo
+        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to delete this photo");
+        throw new UnauthorizedException(apiResponse);
     }
 
     @Override
