@@ -48,4 +48,15 @@ public class TagController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PutMapping("/{id}")
+//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<Tag> updateTag(
+            @PathVariable(name = "id") Long id,
+            @Valid @RequestBody Tag tag,
+            @CurrentUser UserPrincipal currentUser) {
+
+        Tag updatedTag = tagService.updateTag(id, tag, currentUser);
+        return new ResponseEntity<>(updatedTag, HttpStatus.OK);
+    }
+
 }
