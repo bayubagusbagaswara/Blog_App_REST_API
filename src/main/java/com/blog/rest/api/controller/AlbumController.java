@@ -42,4 +42,11 @@ public class AlbumController {
         final Album album = albumService.addAlbum(albumRequest, currentUser);
         return new ResponseEntity<>(album, HttpStatus.CREATED);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Album> getAlbumById(@PathVariable(name = "id") Long id) {
+        final Album album = albumService.getAlbumById(id);
+        return new ResponseEntity<>(album, HttpStatus.OK);
+    }
+
 }
