@@ -1,6 +1,7 @@
 package com.blog.rest.api.controller;
 
 import com.blog.rest.api.entity.Tag;
+import com.blog.rest.api.payload.ApiResponse;
 import com.blog.rest.api.payload.PagedResponse;
 import com.blog.rest.api.security.CurrentUser;
 import com.blog.rest.api.security.UserPrincipal;
@@ -57,6 +58,16 @@ public class TagController {
 
         Tag updatedTag = tagService.updateTag(id, tag, currentUser);
         return new ResponseEntity<>(updatedTag, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse> deleteTag(
+            @PathVariable(name = "id") Long id,
+            @CurrentUser UserPrincipal currentUser) {
+
+        ApiResponse apiResponse = tagService.deleteTag(id, currentUser);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
 }
