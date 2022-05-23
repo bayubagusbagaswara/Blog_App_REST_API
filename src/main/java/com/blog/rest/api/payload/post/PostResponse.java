@@ -1,13 +1,10 @@
-package com.blog.rest.api.payload.request;
+package com.blog.rest.api.payload.post;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,23 +13,16 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostRequest {
+public class PostResponse {
 
-    @NotBlank
-    @Size(min = 10)
+    private Long id;
     private String title;
-
-    @NotBlank
-    @Size(min = 50)
     private String body;
-
-    @NotNull
-    private Long categoryId;
-
+    private String category;
     private List<String> tags;
 
     public List<String> getTags() {
-        return tags == null ? Collections.emptyList() : new ArrayList<>(tags);
+        return tags == null ? null : new ArrayList<>(tags);
     }
 
     public void setTags(List<String> tags) {
@@ -42,4 +32,5 @@ public class PostRequest {
             this.tags = Collections.unmodifiableList(tags);
         }
     }
+
 }

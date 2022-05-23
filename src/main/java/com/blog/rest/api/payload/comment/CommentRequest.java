@@ -1,4 +1,4 @@
-package com.blog.rest.api.payload.request;
+package com.blog.rest.api.payload.comment;
 
 import lombok.Data;
 

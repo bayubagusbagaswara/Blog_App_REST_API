@@ -1,8 +1,8 @@
 package com.blog.rest.api.controller;
 
 import com.blog.rest.api.entity.Category;
-import com.blog.rest.api.payload.response.ApiResponse;
-import com.blog.rest.api.payload.response.PagedResponse;
+import com.blog.rest.api.payload.ApiResponse;
+import com.blog.rest.api.payload.PagedResponse;
 import com.blog.rest.api.security.CurrentUser;
 import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.CategoryService;

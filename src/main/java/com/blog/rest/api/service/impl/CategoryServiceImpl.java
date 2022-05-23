@@ -4,8 +4,8 @@ import com.blog.rest.api.entity.Category;
 import com.blog.rest.api.entity.role.RoleName;
 import com.blog.rest.api.exception.ResourceNotFoundException;
 import com.blog.rest.api.exception.UnauthorizedException;
-import com.blog.rest.api.payload.response.ApiResponse;
-import com.blog.rest.api.payload.response.PagedResponse;
+import com.blog.rest.api.payload.ApiResponse;
+import com.blog.rest.api.payload.PagedResponse;
 import com.blog.rest.api.repository.CategoryRepository;
 import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.CategoryService;
@@ -15,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 

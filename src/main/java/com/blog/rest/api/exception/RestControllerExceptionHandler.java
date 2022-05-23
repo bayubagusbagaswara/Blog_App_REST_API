@@ -1,7 +1,7 @@
 package com.blog.rest.api.exception;
 
-import com.blog.rest.api.payload.response.ApiResponse;
-import com.blog.rest.api.payload.response.ExceptionResponse;
+import com.blog.rest.api.payload.ApiResponse;
+import com.blog.rest.api.payload.ExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;

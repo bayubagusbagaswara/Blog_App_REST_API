@@ -1,8 +1,8 @@
 package com.blog.rest.api.service;
 
 import com.blog.rest.api.entity.user.User;
-import com.blog.rest.api.payload.request.InfoRequest;
-import com.blog.rest.api.payload.response.ApiResponse;
+import com.blog.rest.api.payload.user.UserInfoRequest;
+import com.blog.rest.api.payload.ApiResponse;
 import com.blog.rest.api.payload.user.UserIdentityAvailability;
 import com.blog.rest.api.payload.user.UserProfile;
 import com.blog.rest.api.payload.user.UserSummary;
@@ -38,6 +38,6 @@ public interface UserService {
     ApiResponse removeAdmin(String username);
 
     // set atau update info untuk seorang user
-    UserProfile setOrUpdateInfo(UserPrincipal currentUser, InfoRequest infoRequest);
+    UserProfile setOrUpdateInfo(UserPrincipal currentUser, UserInfoRequest userInfoRequest);
 
 }

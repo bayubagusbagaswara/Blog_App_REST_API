@@ -1,4 +1,4 @@
-package com.blog.rest.api.payload.request;
+package com.blog.rest.api.payload.album;
 
 import com.blog.rest.api.entity.Photo;
 import com.blog.rest.api.entity.user.User;

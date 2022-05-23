@@ -1,9 +1,9 @@
 package com.blog.rest.api.service;
 
 import com.blog.rest.api.entity.Comment;
-import com.blog.rest.api.payload.request.CommentRequest;
-import com.blog.rest.api.payload.response.ApiResponse;
-import com.blog.rest.api.payload.response.PagedResponse;
+import com.blog.rest.api.payload.comment.CommentRequest;
+import com.blog.rest.api.payload.ApiResponse;
+import com.blog.rest.api.payload.PagedResponse;
 import com.blog.rest.api.security.UserPrincipal;
 
 public interface CommentService {

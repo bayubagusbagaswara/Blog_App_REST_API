@@ -1,4 +1,4 @@
-package com.blog.rest.api.payload.response;
+package com.blog.rest.api.payload;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

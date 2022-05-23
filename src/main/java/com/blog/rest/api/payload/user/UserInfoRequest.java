@@ -1,4 +1,4 @@
-package com.blog.rest.api.payload.request;
+package com.blog.rest.api.payload.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class InfoRequest {
+public class UserInfoRequest {
 
     @NotBlank(message = "Street must not be blank")
     private String street;

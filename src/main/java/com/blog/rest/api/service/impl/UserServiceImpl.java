@@ -5,8 +5,8 @@ import com.blog.rest.api.entity.role.RoleName;
 import com.blog.rest.api.entity.user.Address;
 import com.blog.rest.api.entity.user.User;
 import com.blog.rest.api.exception.*;
-import com.blog.rest.api.payload.request.InfoRequest;
-import com.blog.rest.api.payload.response.ApiResponse;
+import com.blog.rest.api.payload.user.UserInfoRequest;
+import com.blog.rest.api.payload.ApiResponse;
 import com.blog.rest.api.payload.user.UserIdentityAvailability;
 import com.blog.rest.api.payload.user.UserProfile;
 import com.blog.rest.api.payload.user.UserSummary;
@@ -219,17 +219,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserProfile setOrUpdateInfo(UserPrincipal currentUser, InfoRequest infoRequest) {
+    public UserProfile setOrUpdateInfo(UserPrincipal currentUser, UserInfoRequest userInfoRequest) {
         // yang bisa melakukan set atau update info hanyalah user yang memiliki role ADMIN
         final User user = userRepository.findByUsername(currentUser.getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
 
         // create new address
         Address address = Address.builder()
-                .street(infoRequest.getStreet())
-                .suite(infoRequest.getSuite())
-                .city(infoRequest.getCity())
-                .zipcode(infoRequest.getZipcode())
+                .street(userInfoRequest.getStreet())
+                .suite(userInfoRequest.getSuite())
+                .city(userInfoRequest.getCity())
+                .zipcode(userInfoRequest.getZipcode())
                 .build();
 
         // cek user apakah memiliki role admin
@@ -237,7 +237,7 @@ public class UserServiceImpl implements UserService {
 
             // jika true, maka update
             user.setAddress(address);
-            user.setPhone(infoRequest.getPhone());
+            user.setPhone(userInfoRequest.getPhone());
 
             // save user
             final User updatedUser = userRepository.save(user);

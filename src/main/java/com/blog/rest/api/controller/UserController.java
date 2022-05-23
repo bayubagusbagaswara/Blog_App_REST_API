@@ -1,8 +1,8 @@
 package com.blog.rest.api.controller;
 
 import com.blog.rest.api.entity.user.User;
-import com.blog.rest.api.payload.request.InfoRequest;
-import com.blog.rest.api.payload.response.ApiResponse;
+import com.blog.rest.api.payload.user.UserInfoRequest;
+import com.blog.rest.api.payload.ApiResponse;
 import com.blog.rest.api.payload.user.UserIdentityAvailability;
 import com.blog.rest.api.payload.user.UserProfile;
 import com.blog.rest.api.payload.user.UserSummary;
@@ -89,9 +89,9 @@ public class UserController {
     @PutMapping("/setOrUpdateInfo")
     public ResponseEntity<UserProfile> setAddress(
             @CurrentUser UserPrincipal currentUser,
-            @Valid @RequestBody InfoRequest infoRequest) {
+            @Valid @RequestBody UserInfoRequest userInfoRequest) {
 
-        UserProfile userProfile = userService.setOrUpdateInfo(currentUser, infoRequest);
+        UserProfile userProfile = userService.setOrUpdateInfo(currentUser, userInfoRequest);
         return new ResponseEntity<>(userProfile, HttpStatus.OK);
     }
 

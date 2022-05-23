@@ -1,6 +1,6 @@
 package com.blog.rest.api.exception;
 
-import com.blog.rest.api.payload.response.ApiResponse;
+import com.blog.rest.api.payload.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 

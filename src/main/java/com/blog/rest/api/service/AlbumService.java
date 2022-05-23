@@ -1,10 +1,10 @@
 package com.blog.rest.api.service;
 
 import com.blog.rest.api.entity.Album;
-import com.blog.rest.api.payload.request.AlbumRequest;
-import com.blog.rest.api.payload.response.AlbumResponse;
-import com.blog.rest.api.payload.response.ApiResponse;
-import com.blog.rest.api.payload.response.PagedResponse;
+import com.blog.rest.api.payload.album.AlbumRequest;
+import com.blog.rest.api.payload.album.AlbumResponse;
+import com.blog.rest.api.payload.ApiResponse;
+import com.blog.rest.api.payload.PagedResponse;
 import com.blog.rest.api.security.UserPrincipal;
 
 public interface AlbumService {
