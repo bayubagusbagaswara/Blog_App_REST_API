@@ -7,10 +7,7 @@ import com.blog.rest.api.service.TagService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -32,5 +29,11 @@ public class TagController {
 
         Tag newTag = tagService.addTag(tag, currentUser);
         return new ResponseEntity<>(newTag, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Tag> getTagById(@PathVariable(name = "id") Long id) {
+        Tag tag = tagService.getTagById(id);
+        return new ResponseEntity<>(tag, HttpStatus.OK);
     }
 }
