@@ -2,6 +2,7 @@ package com.blog.rest.api.service.impl;
 
 import com.blog.rest.api.entity.Album;
 import com.blog.rest.api.entity.Photo;
+import com.blog.rest.api.entity.role.RoleName;
 import com.blog.rest.api.exception.ResourceNotFoundException;
 import com.blog.rest.api.exception.UnauthorizedException;
 import com.blog.rest.api.payload.photo.PhotoRequest;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -132,7 +134,39 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public PhotoResponse updatePhoto(Long id, PhotoRequest photoRequest, UserPrincipal currentUser) {
-        return null;
+
+        // cek album
+        Album album = albumRepository.findById(photoRequest.getAlbumId())
+                .orElseThrow(() -> new ResourceNotFoundException(ALBUM, ID, photoRequest.getAlbumId()));
+
+        // cek photo
+        Photo photo = photoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(PHOTO, ID, id));
+
+        // cek apakah user di album sama dengan current user
+        if (photo.getAlbum().getUser().getId().equals(currentUser.getId())
+                || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+
+            // update photo
+            photo.setTitle(photoRequest.getTitle());
+            photo.setThumbnailUrl(photoRequest.getThumbnailUrl());
+            photo.setAlbum(album);
+
+            // simpan photo
+            Photo updatedPhoto = photoRepository.save(photo);
+
+            // balikan data photo yang berhasil di update
+            return PhotoResponse.builder()
+                    .id(updatedPhoto.getId())
+                    .title(updatedPhoto.getTitle())
+                    .url(updatedPhoto.getUrl())
+                    .thumbnailUrl(updatedPhoto.getThumbnailUrl())
+                    .albumId(updatedPhoto.getAlbum().getId())
+                    .build();
+        }
+
+        // response jika tidak berhasil update photo
+        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to update this photo");
+        throw new UnauthorizedException(apiResponse);
     }
 
     @Override
