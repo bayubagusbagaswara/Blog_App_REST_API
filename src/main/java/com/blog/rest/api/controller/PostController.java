@@ -50,4 +50,15 @@ public class PostController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PutMapping("/{id}")
+//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<Post> updatePost(
+            @PathVariable(name = "id") Long id,
+            @Valid @RequestBody PostRequest newPostRequest,
+            @CurrentUser UserPrincipal currentUser) {
+
+        Post post = postService.updatePost(id, newPostRequest, currentUser);
+        return new ResponseEntity<>(post, HttpStatus.OK);
+    }
+
 }
