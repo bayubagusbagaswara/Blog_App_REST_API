@@ -32,4 +32,13 @@ public class CommentController {
         Comment newComment = commentService.addComment(commentRequest, postId, currentUser);
         return new ResponseEntity<>(newComment, HttpStatus.CREATED);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Comment> getComment(
+            @PathVariable(name = "postId") Long postId,
+            @PathVariable(name = "id") Long id) {
+
+        Comment comment = commentService.getCommentById(postId, id);
+        return new ResponseEntity<>(comment, HttpStatus.OK);
+    }
 }
