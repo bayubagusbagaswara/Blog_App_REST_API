@@ -1,10 +1,12 @@
 package com.blog.rest.api.controller;
 
 import com.blog.rest.api.entity.Comment;
+import com.blog.rest.api.payload.PagedResponse;
 import com.blog.rest.api.payload.comment.CommentRequest;
 import com.blog.rest.api.security.CurrentUser;
 import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.CommentService;
+import com.blog.rest.api.utils.AppConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -41,4 +43,15 @@ public class CommentController {
         Comment comment = commentService.getCommentById(postId, id);
         return new ResponseEntity<>(comment, HttpStatus.OK);
     }
+
+    @GetMapping
+    public ResponseEntity<PagedResponse<Comment>> getAllComments(
+            @PathVariable(name = "postId") Long postId,
+            @RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+            @RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+
+        PagedResponse<Comment> allComments = commentService.getAllComments(postId, page, size);
+        return new ResponseEntity<>(allComments, HttpStatus.OK);
+    }
+
 }
