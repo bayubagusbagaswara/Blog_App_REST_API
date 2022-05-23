@@ -74,4 +74,14 @@ public class AlbumController {
         return new ResponseEntity<>(album, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse> deleteAlbum(
+            @PathVariable(name = "id") Long id,
+            @CurrentUser UserPrincipal currentUser) {
+
+        final ApiResponse apiResponse = albumService.deleteAlbum(id, currentUser);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+    }
+
 }
