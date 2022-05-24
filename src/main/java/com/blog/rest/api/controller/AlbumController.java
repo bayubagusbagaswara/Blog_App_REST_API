@@ -39,7 +39,7 @@ public class AlbumController {
     }
 
     @PostMapping
-//    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Album> addAlbum(
             @Valid @RequestBody AlbumRequest albumRequest,
             @CurrentUser UserPrincipal currentUser) {
@@ -65,7 +65,7 @@ public class AlbumController {
     }
 
     @PutMapping("/{id}")
-//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<AlbumResponse> updateAlbum(
             @PathVariable(name = "id") Long id,
             @Valid @RequestBody AlbumRequest newAlbum,
@@ -76,7 +76,7 @@ public class AlbumController {
     }
 
     @DeleteMapping("/{id}")
-//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> deleteAlbum(
             @PathVariable(name = "id") Long id,
             @CurrentUser UserPrincipal currentUser) {
