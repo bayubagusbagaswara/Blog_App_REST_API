@@ -26,7 +26,7 @@ public class PhotoController {
     }
 
     @PostMapping
-//    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PhotoResponse> addPhoto(
             @Valid @RequestBody PhotoRequest photoRequest,
             @CurrentUser UserPrincipal currentUser) {
@@ -53,7 +53,7 @@ public class PhotoController {
     }
 
     @PutMapping("/{id}")
-//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<PhotoResponse> updatePhoto(
             @PathVariable(name = "id") Long id,
             @Valid @RequestBody PhotoRequest photoRequest,
@@ -64,7 +64,7 @@ public class PhotoController {
     }
 
     @DeleteMapping("/{id}")
-//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> deletePhoto(
             @PathVariable(name = "id") Long id,
             @CurrentUser UserPrincipal currentUser) {
