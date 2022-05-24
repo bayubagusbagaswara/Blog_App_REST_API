@@ -26,7 +26,7 @@ public class CommentController {
     }
 
     @PostMapping
-//    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Comment> addComment(
             @Valid @RequestBody CommentRequest commentRequest,
             @PathVariable(name = "postId") Long postId,
@@ -56,7 +56,7 @@ public class CommentController {
     }
 
     @PutMapping("/{id}")
-//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Comment> updateComment(
             @PathVariable(name = "postId") Long postId,
             @PathVariable(name = "id") Long id,
@@ -68,14 +68,13 @@ public class CommentController {
     }
 
     @DeleteMapping("/{id}")
-//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> deleteComment(
             @PathVariable(name = "postId") Long postId,
             @PathVariable(name = "id") Long id,
             @CurrentUser UserPrincipal currentUser) {
 
         ApiResponse response = commentService.deleteComment(postId, id, currentUser);
-
         HttpStatus status = response.getSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
 
         return new ResponseEntity<>(response, status);
