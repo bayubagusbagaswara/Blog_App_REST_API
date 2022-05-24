@@ -9,6 +9,7 @@ import com.blog.rest.api.service.CategoryService;
 import com.blog.rest.api.utils.AppConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,6 +26,7 @@ public class CategoryController {
 
     // add category
     @PostMapping
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Category> addCategory(
             @Valid @RequestBody Category category,
             @CurrentUser UserPrincipal currentUser) {
@@ -50,6 +52,7 @@ public class CategoryController {
 
     // update category
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Category> updateCategory(
             @PathVariable(name = "id") Long id,
             @Valid @RequestBody Category category,
@@ -60,6 +63,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> deleteCategory(
             @PathVariable(name = "id") Long id,
             @CurrentUser UserPrincipal userPrincipal) {
