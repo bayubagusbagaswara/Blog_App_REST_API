@@ -25,7 +25,7 @@ public class TagController {
     }
 
     @PostMapping
-//    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Tag> addTag(
             @Valid @RequestBody Tag tag,
             @CurrentUser UserPrincipal currentUser) {
@@ -50,7 +50,7 @@ public class TagController {
     }
 
     @PutMapping("/{id}")
-//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Tag> updateTag(
             @PathVariable(name = "id") Long id,
             @Valid @RequestBody Tag tag,
@@ -61,7 +61,7 @@ public class TagController {
     }
 
     @DeleteMapping("/{id}")
-//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> deleteTag(
             @PathVariable(name = "id") Long id,
             @CurrentUser UserPrincipal currentUser) {
