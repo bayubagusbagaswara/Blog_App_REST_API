@@ -27,7 +27,7 @@ public class PostController {
     }
 
     @PostMapping
-//    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PostResponse> addPost(
             @Valid @RequestBody PostRequest postRequest,
             @CurrentUser UserPrincipal currentUser) {
@@ -52,7 +52,7 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Post> updatePost(
             @PathVariable(name = "id") Long id,
             @Valid @RequestBody PostRequest newPostRequest,
@@ -63,7 +63,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> deletePost(
             @PathVariable(name = "id") Long id,
             @CurrentUser UserPrincipal currentUser) {
