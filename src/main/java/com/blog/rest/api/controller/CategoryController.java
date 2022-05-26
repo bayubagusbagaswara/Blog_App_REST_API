@@ -24,7 +24,6 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    // add category
     @PostMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Category> addCategory(
