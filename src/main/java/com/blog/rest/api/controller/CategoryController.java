@@ -10,7 +10,15 @@ import com.blog.rest.api.utils.AppConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -42,14 +50,12 @@ public class CategoryController {
         return categoryService.getAllCategories(page, size);
     }
 
-    // get category by id
     @GetMapping("/{id}")
     public ResponseEntity<Category> getCategoryById(@PathVariable(name = "id") Long id) {
         final Category category = categoryService.getCategoryById(id);
         return new ResponseEntity<>(category, HttpStatus.OK);
     }
 
-    // update category
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Category> updateCategory(
