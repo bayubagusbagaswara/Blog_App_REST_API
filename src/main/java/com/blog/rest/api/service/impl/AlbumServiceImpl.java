@@ -12,11 +12,18 @@ import com.blog.rest.api.repository.UserRepository;
 import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.AlbumService;
 import com.blog.rest.api.utils.AppConstants;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.blog.rest.api.utils.AppUtils;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class AlbumServiceImpl implements AlbumService {
@@ -29,10 +36,12 @@ public class AlbumServiceImpl implements AlbumService {
 
     private final AlbumRepository albumRepository;
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
-    public AlbumServiceImpl(AlbumRepository albumRepository, UserRepository userRepository) {
+    public AlbumServiceImpl(AlbumRepository albumRepository, UserRepository userRepository, ModelMapper modelMapper) {
         this.albumRepository = albumRepository;
         this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -40,9 +49,9 @@ public class AlbumServiceImpl implements AlbumService {
         User user = userRepository.getUser(currentUser);
 
         Album album = new Album();
-        album.setTitle(albumRequest.getTitle());
-        album.setPhoto(albumRequest.getPhoto());
-        album.setCreatedAt(Instant.now());
+
+        modelMapper.map(albumRequest, album);
+
         album.setUser(user);
 
         return albumRepository.save(album);
@@ -56,7 +65,21 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
     public PagedResponse<AlbumResponse> getAllAlbums(int page, int size) {
-        return null;
+        AppUtils.validatePageNumberAndSize(page, size);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
+
+        Page<Album> albums = albumRepository.findAll(pageable);
+
+        if (albums.getNumberOfElements() == 0) {
+            return new PagedResponse<>(Collections.emptyList(), albums.getNumber(), albums.getSize(), albums.getTotalElements(),
+                    albums.getTotalPages(), albums.isLast());
+        }
+
+        List<AlbumResponse> albumResponses = Arrays.asList(modelMapper.map(albums.getContent(), AlbumResponse[].class));
+
+        return new PagedResponse<>(albumResponses, albums.getNumber(), albums.getSize(), albums.getTotalElements(), albums.getTotalPages(),
+                albums.isLast());
     }
 
     @Override
