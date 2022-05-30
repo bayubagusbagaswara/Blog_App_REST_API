@@ -1,7 +1,9 @@
 package com.blog.rest.api.service.impl;
 
 import com.blog.rest.api.entity.Album;
+import com.blog.rest.api.entity.role.RoleName;
 import com.blog.rest.api.entity.user.User;
+import com.blog.rest.api.exception.BlogApiException;
 import com.blog.rest.api.exception.ResourceNotFoundException;
 import com.blog.rest.api.payload.album.AlbumRequest;
 import com.blog.rest.api.payload.album.AlbumResponse;
@@ -18,6 +20,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -84,7 +89,21 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
     public AlbumResponse updateAlbum(Long id, AlbumRequest newAlbum, UserPrincipal currentUser) {
-        return null;
+        Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ALBUM_STR, AppConstants.ID, id));
+        User user = userRepository.getUser(currentUser);
+        if (album.getUser().getId().equals(user.getId()) || currentUser.getAuthorities()
+                .contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+            album.setTitle(newAlbum.getTitle());
+            Album updatedAlbum = albumRepository.save(album);
+
+            AlbumResponse albumResponse = new AlbumResponse();
+
+            modelMapper.map(updatedAlbum, albumResponse);
+
+            return albumResponse;
+        }
+
+        throw new BlogApiException(HttpStatus.UNAUTHORIZED, YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION);
     }
 
     @Override
