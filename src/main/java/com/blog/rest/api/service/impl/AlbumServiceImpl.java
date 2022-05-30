@@ -108,7 +108,16 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
     public ApiResponse deleteAlbum(Long id, UserPrincipal currentUser) {
-        return null;
+        Album album = albumRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(ALBUM_STR, AppConstants.ID, id));
+        User user = userRepository.getUser(currentUser);
+        if (album.getUser().getId().equals(user.getId()) || currentUser.getAuthorities()
+                .contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+            albumRepository.deleteById(id);
+            return new ApiResponse(Boolean.TRUE, "You successfully deleted album");
+        }
+
+        throw new BlogApiException(HttpStatus.UNAUTHORIZED, YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION);
     }
 
     @Override
