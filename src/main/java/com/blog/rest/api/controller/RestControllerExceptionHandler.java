@@ -1,5 +1,6 @@
-package com.blog.rest.api.exception;
+package com.blog.rest.api.controller;
 
+import com.blog.rest.api.exception.*;
 import com.blog.rest.api.payload.ApiResponse;
 import com.blog.rest.api.payload.ExceptionResponse;
 import org.springframework.http.HttpStatus;
