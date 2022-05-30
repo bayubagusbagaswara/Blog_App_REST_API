@@ -1,6 +1,7 @@
 package com.blog.rest.api.service.impl;
 
 import com.blog.rest.api.entity.Album;
+import com.blog.rest.api.entity.user.User;
 import com.blog.rest.api.payload.album.AlbumRequest;
 import com.blog.rest.api.payload.album.AlbumResponse;
 import com.blog.rest.api.payload.ApiResponse;
@@ -11,8 +12,16 @@ import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.AlbumService;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+
 @Service
 public class AlbumServiceImpl implements AlbumService {
+
+    private static final String CREATED_AT = "createdAt";
+
+    private static final String ALBUM_STR = "Album";
+
+    private static final String YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION = "You don't have permission to make this operation";
 
     private final AlbumRepository albumRepository;
     private final UserRepository userRepository;
@@ -24,7 +33,15 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
     public Album addAlbum(AlbumRequest albumRequest, UserPrincipal currentUser) {
-        return null;
+        User user = userRepository.getUser(currentUser);
+
+        Album album = new Album();
+        album.setTitle(albumRequest.getTitle());
+        album.setPhoto(albumRequest.getPhoto());
+        album.setCreatedAt(Instant.now());
+        album.setUser(user);
+
+        return albumRepository.save(album);
     }
 
     @Override
