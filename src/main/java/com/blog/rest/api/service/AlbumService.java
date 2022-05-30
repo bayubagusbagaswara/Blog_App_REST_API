@@ -19,5 +19,5 @@ public interface AlbumService {
 
     ApiResponse deleteAlbum(Long id, UserPrincipal currentUser);
 
-    Album getUserAlbums(String username, int page, int size);
+    PagedResponse<Album> getUserAlbums(String username, int page, int size);
 }
