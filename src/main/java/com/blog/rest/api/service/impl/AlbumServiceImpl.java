@@ -2,6 +2,7 @@ package com.blog.rest.api.service.impl;
 
 import com.blog.rest.api.entity.Album;
 import com.blog.rest.api.entity.user.User;
+import com.blog.rest.api.exception.ResourceNotFoundException;
 import com.blog.rest.api.payload.album.AlbumRequest;
 import com.blog.rest.api.payload.album.AlbumResponse;
 import com.blog.rest.api.payload.ApiResponse;
@@ -10,6 +11,9 @@ import com.blog.rest.api.repository.AlbumRepository;
 import com.blog.rest.api.repository.UserRepository;
 import com.blog.rest.api.security.UserPrincipal;
 import com.blog.rest.api.service.AlbumService;
+import com.blog.rest.api.utils.AppConstants;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -46,7 +50,8 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
     public Album getAlbumById(Long id) {
-        return null;
+        return albumRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(ALBUM_STR, AppConstants.ID, id));
     }
 
     @Override
