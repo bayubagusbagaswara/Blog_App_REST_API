@@ -121,7 +121,15 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public Album getUserAlbums(String username, int page, int size) {
-        return null;
+    public PagedResponse<Album> getUserAlbums(String username, int page, int size) {
+        User user = userRepository.getUserByName(username);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
+
+        Page<Album> albums = albumRepository.findByCreatedBy(user.getId(), pageable);
+
+        List<Album> content = albums.getNumberOfElements() > 0 ? albums.getContent() : Collections.emptyList();
+
+        return new PagedResponse<>(content, albums.getNumber(), albums.getSize(), albums.getTotalElements(), albums.getTotalPages(), albums.isLast());
     }
 }
