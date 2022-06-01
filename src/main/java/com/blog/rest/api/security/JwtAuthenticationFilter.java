@@ -3,6 +3,7 @@ package com.blog.rest.api.security;
 import com.blog.rest.api.service.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,25 +31,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private  CustomUserDetailsService customUserDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         try {
-            // ambil token dari setiap request user
+
             String jwt = getJwtFromRequest(request);
 
-            // cek jika toke
             if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
 
-                // ambil user id
                 Long userId = jwtTokenProvider.getUserIdFromJWT(jwt);
 
-                // ambil user detail
                 UserDetails userDetails = customUserDetailsService.loadUserById(userId);
 
-
-                // autentikasi token
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null,
                         userDetails.getAuthorities());
 
@@ -67,7 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7, bearerToken.length());
+            return bearerToken.substring(7);
         }
         return null;
     }
