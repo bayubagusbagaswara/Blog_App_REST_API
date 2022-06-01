@@ -7,9 +7,7 @@ import com.blog.rest.api.payload.jwt.JwtAuthenticationResponse;
 
 public interface AuthService {
 
-    // signin
     JwtAuthenticationResponse signIn(LoginRequest loginRequest);
 
-    // signup
     User signUp(SignUpRequest signUpRequest);
 }
