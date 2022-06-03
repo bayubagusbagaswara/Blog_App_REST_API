@@ -28,7 +28,7 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "albums", uniqueConstraints = @UniqueConstraint(columnNames = "title" ))
+@Table(name = "albums", uniqueConstraints = @UniqueConstraint(name = "album_title_unique", columnNames = "title" ))
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
