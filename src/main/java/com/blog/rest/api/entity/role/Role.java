@@ -4,10 +4,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NaturalId;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "roles", uniqueConstraints = @UniqueConstraint(name = "roles_name_unique", columnNames = "name"))
 @Data
 @NoArgsConstructor
 public class Role {
@@ -21,7 +29,6 @@ public class Role {
     @Column(name = "name")
     private RoleName name;
 
-    // constructor with paramater RoleName
     public Role(RoleName name) {
         this.name = name;
     }
