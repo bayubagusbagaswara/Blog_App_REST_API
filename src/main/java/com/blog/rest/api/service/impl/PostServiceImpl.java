@@ -48,62 +48,32 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostResponse addPost(PostRequest postRequest, UserPrincipal currentUser) {
-
-        // cek user
         User user = userRepository.findById(currentUser.getId())
-                .orElseThrow(() -> new ResourceNotFoundException(USER, ID, 1L));
+                .orElseThrow(() -> new ResourceNotFoundException(USER, ID, currentUser.getId()));
 
-        // cek category
         Category category = categoryRepository.findById(postRequest.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException(CATEGORY, ID, postRequest.getCategoryId()));
 
-        // bikin object tags
         List<Tag> tags = new ArrayList<>(postRequest.getTags().size());
 
-        // ambil semua tag dari postRequest
         for (String name : postRequest.getTags()) {
 
-            // cek tag by name
             Tag tag = tagRepository.findByName(name);
 
-            // jika name tag nya == null(belum ada), maka simpan tag nya
-            // jika sudah ada name tag nya, maka balikan data tag nya
             tag = tag == null ? tagRepository.save(new Tag(name)) : tag;
 
-            // tambahkan tag ke dalam list tags
             tags.add(tag);
         }
 
-        // create post
-        Post post = new Post();
-        post.setBody(postRequest.getBody());
-        post.setTitle(postRequest.getTitle());
-        post.setCategory(category);
-        post.setUser(user);
-        post.setTags(tags);
-
-        // simpan post
+        Post post = new Post(postRequest.getTitle(), postRequest.getBody(), user, category, tags);
         Post newPost = postRepository.save(post);
 
-        // create postRepsonse untuk menyimpan data mapping dari Post ke PostResponse
-        PostResponse postResponse = new PostResponse();
-        postResponse.setTitle(newPost.getTitle());
-        postResponse.setBody(newPost.getBody());
-        postResponse.setCategory(newPost.getCategory().getName());
-
-        // buat object tagNames untuk menyimpan data nama tag
         List<String> tagNames = new ArrayList<>(newPost.getTags().size());
-
-        // ambil semua name tag nya, lalu masukkan ke object tagNames
         for (Tag tag : newPost.getTags()) {
             tagNames.add(tag.getName());
         }
 
-        // masukkan data tagNames kedalam property tags milik object PostResponse
-        postResponse.setTags(tagNames);
-
-        // balikkan object PostResponse
-        return postResponse;
+        return new PostResponse(newPost.getTitle(), newPost.getBody(), newPost.getCategory().getName(), tagNames);
     }
 
     @Override
@@ -113,17 +83,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PagedResponse<Post> getAllPosts(int page, int size) {
-
-        // validasi data page and size
         AppUtils.validatePageNumberAndSize(page, size);
 
-        // bikin object pageable
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
 
-        // ambil data list of posts
         Page<Post> posts = postRepository.findAll(pageable);
 
-        // ambil content dimana adalah list of post
         List<Post> content = posts.getNumberOfElements() == 0 ? Collections.emptyList() : posts.getContent();
 
         return PagedResponse.<Post>builder()
@@ -138,16 +103,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post updatePost(Long id, PostRequest newPostRequest, UserPrincipal currentUser) {
-
-        // cek post
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(POST, ID, id));
 
-        // cek category
         Category category = categoryRepository.findById(newPostRequest.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException(CATEGORY, ID, newPostRequest.getCategoryId()));
 
-        // cek user apakah memiliki ROLE ADMIN
         if (post.getUser().getId().equals(currentUser.getId())
                 || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
             post.setTitle(newPostRequest.getTitle());
@@ -156,45 +117,33 @@ public class PostServiceImpl implements PostService {
             return postRepository.save(post);
         }
 
-        // jika user tidak bisa update post
-        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to edit this post");
-        throw new UnauthorizedException(apiResponse);
+        throw new UnauthorizedException(new ApiResponse(Boolean.FALSE, "You don't have permission to edit this post"));
     }
 
     @Override
     public ApiResponse deletePost(Long id, UserPrincipal currentUser) {
-
-        // cek post
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(POST, ID, id));
 
-        // cek user apakah memiliki ROLE_ADMIN
         if (post.getUser().getId().equals(currentUser.getId())
                 || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
             postRepository.deleteById(id);
             return new ApiResponse(Boolean.TRUE, "You successfully deleted post");
         }
 
-        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to delete this post");
-        throw new UnauthorizedException(apiResponse);
+        throw new UnauthorizedException(new ApiResponse(Boolean.FALSE, "You don't have permission to delete this post"));
     }
 
     @Override
     public PagedResponse<Post> getPostsByCreatedBy(String username, int page, int size) {
-
-        // validasi data page dan size
         AppUtils.validatePageNumberAndSize(page, size);
 
-        // cek user
         User user = userRepository.getUserByName(username);
 
-        // create object pageable
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
 
-        // dapatkan object posts
         Page<Post> posts = postRepository.findByCreatedBy(user.getId(), pageable);
 
-        // create object list of post
         List<Post> content = posts.getNumberOfElements() == 0 ? Collections.emptyList() : posts.getContent();
 
         return PagedResponse.<Post>builder()
