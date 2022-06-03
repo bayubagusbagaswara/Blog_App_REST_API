@@ -37,8 +37,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "username"),
-        @UniqueConstraint(columnNames = "email")
+        @UniqueConstraint(name = "user_username_unique", columnNames = "username"),
+        @UniqueConstraint(name = "user_email_unique", columnNames = "email")
 })
 @Data
 @NoArgsConstructor
