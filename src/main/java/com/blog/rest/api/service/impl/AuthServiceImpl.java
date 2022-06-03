@@ -27,7 +27,6 @@ import java.util.List;
 public class AuthServiceImpl implements AuthService {
 
     private static final String USER_ROLE_NOT_SET = "User role not set";
-
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -45,8 +44,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public JwtAuthenticationResponse signIn(LoginRequest loginRequest) {
 
-        // untuk autentikasi kita cukup menggunakan authenticationManager
-        // autentikasi berdasarkan username dan password, apakah cocok dengan data di database
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsernameOrEmail(),
@@ -61,7 +58,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public User signUp(SignUpRequest signUpRequest) {
-
         if (Boolean.TRUE.equals(userRepository.existsByUsername(signUpRequest.getUsername()))) {
             throw new BlogApiException(HttpStatus.BAD_REQUEST, "Username is already taken");
         }
@@ -76,10 +72,8 @@ public class AuthServiceImpl implements AuthService {
         String email = signUpRequest.getEmail().toLowerCase();
         String password = passwordEncoder.encode(signUpRequest.getPassword());
 
-        // create object user
         User user = new User(firstName, lastName, username, email, password);
 
-        // create object role
         List<Role> roles = new ArrayList<>();
 
         if (userRepository.count() == 0) {
@@ -93,7 +87,6 @@ public class AuthServiceImpl implements AuthService {
         }
 
         user.setRoles(roles);
-
         return userRepository.save(user);
     }
 }
