@@ -4,8 +4,13 @@ import com.blog.rest.api.entity.audit.UserDateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-import javax.persistence.*;
-import java.io.Serial;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 
 @EqualsAndHashCode(callSuper = true)
@@ -16,9 +21,6 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Address extends UserDateAudit {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
