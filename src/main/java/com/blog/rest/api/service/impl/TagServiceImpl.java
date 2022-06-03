@@ -41,7 +41,6 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public PagedResponse<Tag> getAllTags(int page, int size) {
-        // validasi data page dan size
         AppUtils.validatePageNumberAndSize(page, size);
 
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
@@ -69,23 +68,21 @@ public class TagServiceImpl implements TagService {
             tag.setName(newTag.getName());
             return tagRepository.save(tag);
         }
-        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to edit this tag");
 
-        throw new UnauthorizedException(apiResponse);
+        throw new UnauthorizedException(new ApiResponse(Boolean.FALSE, "You don't have permission to edit this tag"));
     }
 
     @Override
     public ApiResponse deleteTag(Long id, UserPrincipal currentUser) {
         Tag tag = tagRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tag", "id", id));
+
         if (tag.getCreatedBy().equals(currentUser.getUsername()) || currentUser.getAuthorities()
                 .contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
             tagRepository.deleteById(id);
             return new ApiResponse(Boolean.TRUE, "You successfully deleted tag");
         }
 
-        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to delete this tag");
-
-        throw new UnauthorizedException(apiResponse);
+        throw new UnauthorizedException(new ApiResponse(Boolean.FALSE, "You don't have permission to delete this tag"));
     }
 }
