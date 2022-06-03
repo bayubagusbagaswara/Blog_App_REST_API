@@ -10,34 +10,24 @@ import com.blog.rest.api.security.UserPrincipal;
 
 public interface UserService {
 
-    // ambil current user yang sedang mengakses aplikasi kita
     UserSummary getCurrentUser(UserPrincipal currentUser);
 
-    // cek apakah username sudah tersedia atau belum
     UserIdentityAvailability checkUsernameAvailability(String username);
 
-    // cek apakah email sudah terdaftar atau belum
     UserIdentityAvailability checkEmailAvailability(String email);
 
-    // ambil profile user
     UserProfile getUserProfile(String username);
 
-    // menambahkan user baru
     User addUser(User user);
 
-    // update user
     User updateUser(User newUser, String username, UserPrincipal currentUser);
 
-    // delete user
     ApiResponse deleteUser(String username, UserPrincipal currentUser);
 
-    // give admin adalah memberikan role admin ke user
     ApiResponse giveAdmin(String username);
 
-    // remove role admin dari seorang user
     ApiResponse removeAdmin(String username);
 
-    // set atau update info untuk seorang user
     UserProfile setOrUpdateInfo(UserPrincipal currentUser, UserInfoRequest userInfoRequest);
 
 }
