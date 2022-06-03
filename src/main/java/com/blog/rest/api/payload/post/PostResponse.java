@@ -21,6 +21,19 @@ public class PostResponse {
     private String category;
     private List<String> tags;
 
+    public PostResponse(String title, String body, String category) {
+        this.title = title;
+        this.body = body;
+        this.category = category;
+    }
+
+    public PostResponse(String title, String body, String category, List<String> tags) {
+        this.title = title;
+        this.body = body;
+        this.category = category;
+        this.tags = tags;
+    }
+
     public List<String> getTags() {
         return tags == null ? null : new ArrayList<>(tags);
     }
