@@ -42,57 +42,30 @@ public class PhotoServiceImpl implements PhotoService {
     @Override
     public PhotoResponse addPhoto(PhotoRequest photoRequest, UserPrincipal currentUser) {
 
-        // cek album
         Album album = albumRepository.findById(photoRequest.getAlbumId())
                 .orElseThrow(() -> new ResourceNotFoundException(ALBUM, ID, photoRequest.getAlbumId()));
 
-        // cek user by id apakah sama
         if (album.getUser().getId().equals(currentUser.getId())) {
+            Photo photo = new Photo(photoRequest.getTitle(), photoRequest.getUrl(), photoRequest.getThumbnailUrl(), album);
 
-            // create photo
-            Photo photo = Photo.builder()
-                    .title(photoRequest.getTitle())
-                    .url(photoRequest.getUrl())
-                    .thumbnailUrl(photoRequest.getThumbnailUrl())
-                    .album(album)
-                    .build();
-
-            // save photo
             Photo newPhoto = photoRepository.save(photo);
-
-            return PhotoResponse.builder()
-                    .id(newPhoto.getId())
-                    .title(newPhoto.getTitle())
-                    .url(newPhoto.getUrl())
-                    .thumbnailUrl(newPhoto.getThumbnailUrl())
-                    .albumId(newPhoto.getAlbum().getId())
-                    .build();
+            return new PhotoResponse(newPhoto.getId(), newPhoto.getTitle(), newPhoto.getUrl(), newPhoto.getThumbnailUrl(), newPhoto.getAlbum().getId());
         }
 
-        // balikan jika tidak bisa menambahkan photo
-        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to add photo in this album");
-        throw new UnauthorizedException(apiResponse);
+        throw new UnauthorizedException(new ApiResponse(Boolean.FALSE, "You don't have permission to add photo in this album"));
     }
 
     @Override
     public PhotoResponse getPhotoById(Long id) {
-        // cari photo
         Photo photo = photoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(PHOTO, ID, id));
 
-        return PhotoResponse.builder()
-                .id(photo.getId())
-                .title(photo.getTitle())
-                .url(photo.getUrl())
-                .thumbnailUrl(photo.getThumbnailUrl())
-                .albumId(photo.getAlbum().getId())
-                .build();
+        return new PhotoResponse(photo.getId(), photo.getTitle(), photo.getUrl(), photo.getThumbnailUrl(), photo.getAlbum().getId());
     }
 
     @Override
     public PagedResponse<PhotoResponse> getAllPhotos(int page, int size) {
 
-        // validasi data page dan size
         AppUtils.validatePageNumberAndSize(page, size);
 
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
@@ -102,13 +75,7 @@ public class PhotoServiceImpl implements PhotoService {
         List<PhotoResponse> photoResponses = new ArrayList<>(photos.getContent().size());
 
         for (Photo photo : photos.getContent()) {
-            PhotoResponse photoResponse = PhotoResponse.builder()
-                    .id(photo.getId())
-                    .title(photo.getTitle())
-                    .url(photo.getUrl())
-                    .thumbnailUrl(photo.getThumbnailUrl())
-                    .albumId(photo.getAlbum().getId())
-                    .build();
+            PhotoResponse photoResponse = new PhotoResponse(photo.getId(), photo.getTitle(), photo.getUrl(), photo.getThumbnailUrl(), photo.getAlbum().getId());
             photoResponses.add(photoResponse);
         }
 
@@ -136,64 +103,45 @@ public class PhotoServiceImpl implements PhotoService {
     @Override
     public PhotoResponse updatePhoto(Long id, PhotoRequest photoRequest, UserPrincipal currentUser) {
 
-        // cek album
         Album album = albumRepository.findById(photoRequest.getAlbumId())
                 .orElseThrow(() -> new ResourceNotFoundException(ALBUM, ID, photoRequest.getAlbumId()));
 
-        // cek photo
-        Photo photo = photoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(PHOTO, ID, id));
+        Photo photo = photoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(PHOTO, ID, id));
 
-        // cek apakah user di album sama dengan current user
         if (photo.getAlbum().getUser().getId().equals(currentUser.getId())
                 || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
 
-            // update photo
             photo.setTitle(photoRequest.getTitle());
             photo.setThumbnailUrl(photoRequest.getThumbnailUrl());
             photo.setAlbum(album);
 
-            // simpan photo
             Photo updatedPhoto = photoRepository.save(photo);
 
-            // balikan data photo yang berhasil di update
-            return PhotoResponse.builder()
-                    .id(updatedPhoto.getId())
-                    .title(updatedPhoto.getTitle())
-                    .url(updatedPhoto.getUrl())
-                    .thumbnailUrl(updatedPhoto.getThumbnailUrl())
-                    .albumId(updatedPhoto.getAlbum().getId())
-                    .build();
+            return new PhotoResponse(updatedPhoto.getId(), updatedPhoto.getTitle(), updatedPhoto.getUrl(), updatedPhoto.getThumbnailUrl(), updatedPhoto.getAlbum().getId());
         }
 
-        // response jika tidak berhasil update photo
-        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to update this photo");
-        throw new UnauthorizedException(apiResponse);
+        throw new UnauthorizedException(new ApiResponse(Boolean.FALSE, "You don't have permission to update this photo"));
     }
 
     @Override
     public ApiResponse deletePhoto(Long id, UserPrincipal currentUser) {
-        // get photo
         Photo photo = photoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(PHOTO, ID, id));
 
-        // cek apakah user photo sama dengan current user
         if (photo.getAlbum().getUser().getId().equals(currentUser.getId())
                 || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
 
-            // hapus photo
             photoRepository.deleteById(id);
             return new ApiResponse(Boolean.TRUE, "Photo deleted successfully");
         }
 
-        // response gagal menghapus photo
-        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to delete this photo");
-        throw new UnauthorizedException(apiResponse);
+        throw new UnauthorizedException(new ApiResponse(Boolean.FALSE, "You don't have permission to delete this photo"));
     }
 
     @Override
     public PagedResponse<PhotoResponse> getAllPhotosByAlbum(Long albumId, int page, int size) {
 
-        // validasi data page dan size
         AppUtils.validatePageNumberAndSize(page, size);
 
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, AppConstants.CREATED_AT);
@@ -202,21 +150,11 @@ public class PhotoServiceImpl implements PhotoService {
 
         List<PhotoResponse> photoResponses = new ArrayList<>(photos.getContent().size());
 
-        // ambil semua data photo
         for (Photo photo : photos.getContent()) {
-            PhotoResponse photoResponse = PhotoResponse.builder()
-                    .id(photo.getId())
-                    .title(photo.getTitle())
-                    .url(photo.getUrl())
-                    .thumbnailUrl(photo.getThumbnailUrl())
-                    .albumId(photo.getAlbum().getId())
-                    .build();
-
-            // add photoResponse
+            PhotoResponse photoResponse = new PhotoResponse(photo.getId(), photo.getTitle(), photo.getUrl(), photo.getThumbnailUrl(), photo.getAlbum().getId());
             photoResponses.add(photoResponse);
         }
 
-        // response PagedRespone
         return PagedResponse.<PhotoResponse>builder()
                 .content(photoResponses)
                 .page(photos.getNumber())
