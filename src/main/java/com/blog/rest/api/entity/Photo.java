@@ -2,23 +2,33 @@ package com.blog.rest.api.entity;
 
 import com.blog.rest.api.entity.audit.UserDateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
-import java.io.Serial;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "photos", uniqueConstraints = { @UniqueConstraint(columnNames = { "title" }) })
+@Table(name = "photos", uniqueConstraints = @UniqueConstraint(name = "photo_title_unique", columnNames = "title"))
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Photo extends UserDateAudit {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
