@@ -67,6 +67,14 @@ public class Post extends UserDateAudit {
             inverseJoinColumns = @JoinColumn(name = "tag_id", foreignKey = @ForeignKey(name = "fk_post_tag_tag_id"), referencedColumnName = "id"))
     private List<Tag> tags;
 
+    public Post(String title, String body, User user, Category category, List<Tag> tags) {
+        this.title = title;
+        this.body = body;
+        this.user = user;
+        this.category = category;
+        this.tags = tags;
+    }
+
     @JsonIgnore
     public User getUser() {
         return user;
