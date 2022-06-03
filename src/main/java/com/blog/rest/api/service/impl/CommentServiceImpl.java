@@ -30,7 +30,7 @@ public class CommentServiceImpl implements CommentService {
     private static final String COMMENT_STR = "Comment";
     private static final String POST_STR = "Post";
     private static final String THIS_COMMENT = " this comment";
-    private static final String YOU_DON_T_HAVE_PERMISSION_TO = "You don't have permission to ";
+    private static final String YOU_DON_T_HAVE_PERMISSION_TO = "You don't have permission to";
     private static final String COMMENT_DOES_NOT_BELONG_TO_POST = "Comment does not belong to post";
 
     private final CommentRepository commentRepository;
@@ -45,14 +45,11 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment addComment(CommentRequest commentRequest, Long postId, UserPrincipal currentUser) {
-        // cek post
         final Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException(POST_STR, ID_STR, postId));
 
-        // cek user
         final User user = userRepository.getUser(currentUser);
 
-        // create comment
         Comment comment = new Comment(commentRequest.getBody());
         comment.setUser(user);
         comment.setPost(post);
