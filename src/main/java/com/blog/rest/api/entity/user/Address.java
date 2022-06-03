@@ -2,7 +2,11 @@ package com.blog.rest.api.entity.user;
 
 import com.blog.rest.api.entity.audit.UserDateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
