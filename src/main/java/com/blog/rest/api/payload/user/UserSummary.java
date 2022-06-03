@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// class payload ini berisi data atau property User
 @Data
 @Builder
 @AllArgsConstructor
