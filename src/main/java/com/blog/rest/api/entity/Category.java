@@ -7,8 +7,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.io.Serial;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,12 +24,8 @@ import java.util.List;
 @Table(name = "categories")
 @Data
 @NoArgsConstructor
-// artinya saat data category ini diload atau diambil dari entity lain, maka hanya data id category saja yang diambil
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Category extends UserDateAudit {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,9 +34,6 @@ public class Category extends UserDateAudit {
     @Column(name = "name")
     private String name;
 
-    // relasi dengan Post, ini relasi bidirectional,
-    // artinya dari sisi Category kita bisa mengambil data Post
-    // 1 Category bisa memiliki banyak Post
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts;
 
@@ -43,14 +42,10 @@ public class Category extends UserDateAudit {
         this.name = name;
     }
 
-    // method untuk mengambil data Post dari category
     public List<Post> getPosts() {
         return this.posts == null ? null : new ArrayList<>(this.posts);
     }
 
-    // method untuk set Post
-    // kita tidak bisa set Post dari sisi Category, makanya kita jadikan sebagai immutable
-    // karena post hanya bisa diubah dari sisi Post
     public void setPosts(List<Post> posts) {
         if (posts == null) {
             this.posts = null;
