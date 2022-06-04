@@ -27,19 +27,22 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 )
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    // ini untuk mengambil data user details
     private final CustomUserDetailsServiceImpl customUserDetailsService;
 
-    // handler jika autentikasi gagal
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
 
-    // filter untuk tiap request dari user
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     public SecurityConfig(CustomUserDetailsServiceImpl customUserDetailsService, JwtAuthenticationEntryPoint unauthorizedHandler, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.customUserDetailsService = customUserDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
+
+    @Bean(BeanIds.AUTHENTICATION_MANAGER)
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
     @Override
@@ -70,11 +73,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder());
     }
 
-    @Bean(BeanIds.AUTHENTICATION_MANAGER)
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
