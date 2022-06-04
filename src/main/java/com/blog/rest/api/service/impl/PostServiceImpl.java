@@ -181,18 +181,17 @@ public class PostServiceImpl implements PostService {
     @Override
     public PagedResponse<Post> getPostsByTag(Long id, int page, int size) {
 
-//        AppUtils.validatePageNumberAndSize(page, size);
-//
-//        Tag tag = tagRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(TAG, ID, id));
-//
-//        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
-//
-//        Page<Post> posts = postRepository.findByTags(Collections.singletonList(tag), pageable);
-//
-//        List<Post> content = posts.getNumberOfElements() == 0 ? Collections.emptyList() : posts.getContent();
-//
-//        return new PagedResponse<>(content, posts.getNumber(), posts.getSize(), posts.getTotalElements(),
-//                posts.getTotalPages(), posts.isLast());
-        return null;
+        AppUtils.validatePageNumberAndSize(page, size);
+
+        Tag tag = tagRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(TAG, ID, id));
+
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
+
+        Page<Post> posts = postRepository.findByTagsIn(Collections.singletonList(tag), pageable);
+
+        List<Post> content = posts.getNumberOfElements() == 0 ? Collections.emptyList() : posts.getContent();
+
+        return new PagedResponse<>(content, posts.getNumber(), posts.getSize(), posts.getTotalElements(),
+                posts.getTotalPages(), posts.isLast());
     }
 }
