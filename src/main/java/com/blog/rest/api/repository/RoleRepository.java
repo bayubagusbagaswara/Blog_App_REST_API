@@ -10,6 +10,5 @@ import java.util.Optional;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
 
-    // mencari role berdasarkan name, roleName diambil dari data enum
     Optional<Role> findByName(RoleName name);
 }
