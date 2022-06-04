@@ -8,7 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AlbumRepository extends JpaRepository<Album, Long> {
-
-    // mencari album berdasarkan created by dari user tertentu
     Page<Album> findByCreatedBy(Long userId, Pageable pageable);
 }
